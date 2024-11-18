@@ -39,7 +39,6 @@ body {
 
 /* Portrait layout (default) */
 .app {
-    background:url(../img/logo.png) no-repeat center top; /* 170px x 200px */
     position:absolute;             /* position in the center of the screen */
     left:50%;
     top:50%;
@@ -107,4 +106,16 @@ h1 {
     body {
         background-image:linear-gradient(to bottom, #585858 0%, #1B1B1B 51%);
     }
+}
+
+#logoutPage {
+    display: none;
+}
+
+#statsPage {
+    display: none;
+}
+
+#jeu {
+    display: none;
 }

@@ -38,10 +38,27 @@
     </head>
     <body>
         <div class="app">
-            <h1>Apache Cordova</h1>
-            <div id="deviceready" class="blink">
-                <p class="event listening">Connecting to Device</p>
-                <p class="event received">Device is Ready</p>
+            <div id="loginPage">
+                <div id="loginDiv" >
+                    <label for="username">Username</label>
+                    <input type="text" name="username" id="username">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="password">
+                    <div><button id="loginButton">Login</button></div>
+                </div>
+            </div>
+
+            <div id="logoutPage">
+                <button id="logoutButton">Logout</button>
+            </div>
+
+            <div id="statsPage">
+
+                <button id="toJeu">Jeu</button>
+            </div>
+
+            <div id="jeu">
+
             </div>
         </div>
         <script src="cordova.js"></script>
