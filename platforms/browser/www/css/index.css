@@ -117,5 +117,14 @@ h1 {
 }
 
 #jeu {
-    display: none;
+    display: block;
 }
+
+#board-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+  }
+  
