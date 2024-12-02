@@ -24,6 +24,8 @@ document.addEventListener('deviceready', onDeviceReady, false);
 function onDeviceReady() {
     // Cordova is now initialized. Have fun!
 
+
+    //déclaration des variables
     const divLogin = document.getElementById('loginPage');
     const divJeu = document.getElementById('jeu');
     const divStats = document.getElementById('statsPage');
@@ -32,12 +34,19 @@ function onDeviceReady() {
     const inputPassword = document.getElementById('password');
     const ws = new WebSocket('ws://10.0.0.2:9898/');//127.0.0.1:9898 pour browser et 10.0.0.2:9898 pour emulateur
 
+    //déclaration des variables pour une partie
+    let username = null;
+    let isWi = null;
+    let adversaire = null;
+
     ws.onopen = function () {
         console.log('Connecté');
         ws.send('Hello');
     };
     ws.onmessage = function (e) {
         console.log('Message:', e.data);
+
+
     };
     ws.onclose = function () {
         console.log('Fermé');
@@ -153,10 +162,12 @@ function onDeviceReady() {
             //envoie un message de déplacement au serveur node, il est de type move et contient les coordonnées de départ et d'arrivée
             message = {
                 type: 'move',
+                username: username,
                 x_depart: selectedPiece.getAttribute('data-col'),
                 y_depart: selectedPiece.getAttribute('data-row'),
                 x_arrivee: col,
-                y_arrivee: row
+                y_arrivee: row,
+                couleur: selectedPiece.getAttribute('fill')=='#ffffff'? 'blanc':'noir' 
             };
 
 
@@ -176,6 +187,16 @@ function onDeviceReady() {
             ws.send(JSON.stringify(message));
         }
     }
+
+    //envoie un message de demande demande de partie au serveur node, il est de type demande et contient le nom d'utilisateur
+    document.getElementById('toJeu').addEventListener('click', function () {
+        message = {
+            type: 'startGame',
+            username: username
+        };
+
+        ws.send(JSON.stringify(message));
+    });
 
     // Générer le plateau et les pions
     generateBoard();
