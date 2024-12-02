@@ -36,7 +36,7 @@ function onDeviceReady() {
 
     //déclaration des variables pour une partie
     let username = null;
-    let isWi = null;
+    let isWhite = null;
     let adversaire = null;
 
     ws.onopen = function () {
@@ -44,7 +44,20 @@ function onDeviceReady() {
         ws.send('Hello');
     };
     ws.onmessage = function (e) {
+        message=JSON.parse(e.data);
         console.log('Message:', e.data);
+
+        if(message.type == 'login'&&message.response) {
+                username = message.username;
+                divLogin.style.display = 'none';
+                divStats.style.display = 'block';
+        }
+
+        if(message.type=='start'){
+            
+            divStats.style.display = 'none';
+            divJeu.style.display = 'block';
+        }
 
 
     };
@@ -167,7 +180,7 @@ function onDeviceReady() {
                 y_depart: selectedPiece.getAttribute('data-row'),
                 x_arrivee: col,
                 y_arrivee: row,
-                couleur: selectedPiece.getAttribute('fill')=='#ffffff'? 'blanc':'noir' 
+                couleur: selectedPiece.getAttribute('fill')=='#ffffff'? 'white':'black' 
             };
 
 
