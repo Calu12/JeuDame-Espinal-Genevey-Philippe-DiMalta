@@ -16,5 +16,5 @@
     <!-- Configuration spécifique au navigateur -->
     <platform name="browser">
     <content src="index.html" />
-</platform>
+    </platform>
 </widget>
