@@ -1,5 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="io.cordova.hellocordova" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="io.cordova.hellocordova" version="1.0.0"
+    xmlns="http://www.w3.org/ns/widgets"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>HelloCordova</name>
     <description>Sample Apache Cordova App</description>
     <author email="dev@cordova.apache.org" href="https://cordova.apache.org">
@@ -11,10 +14,10 @@
     <preference name="MixedContentMode" value="0" />
     <!-- Configuration spécifique à android -->
     <platform name="android">
-    <content src="http://localhost/index.html" />
+        <content src="http://localhost/index.html" />
     </platform>
     <!-- Configuration spécifique au navigateur -->
     <platform name="browser">
-    <content src="index.html" />
+        <content src="index.html" />
     </platform>
 </widget>
