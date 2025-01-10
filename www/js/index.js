@@ -50,8 +50,8 @@ function onDeviceReady() {
     message = JSON.parse(e.data);
     console.log("Message:", e.data);
 
-    if (message.type == "login" ) {
-      username = message.username;
+    if (message.type == "login" && message.success) {
+      username = message.joueur.username;
       divLogin.style.display = "none";
       divStats.style.display = "block";
     }
