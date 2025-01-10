@@ -41,6 +41,13 @@ function onDeviceReady() {
   let myturn = false;
   let selectedCell = null;
 
+  // Dimensions du plateau
+  const boardSize = 8; // 8x8 cases
+  const cellSize = 50; // Chaque case est de 50x50 pixels
+  const board = document.getElementById("board");
+  const pieces = document.getElementById("pieces");
+  let selectedPiece = null; // Variable pour stocker le pion sélectionné
+
   ws.onopen = function () {
     console.log("Connecté");
     const message = { type: "Hello", message: "Hello" };
@@ -55,6 +62,7 @@ function onDeviceReady() {
       divLogin.style.display = "none";
       divStats.style.display = "block";
       divLogout.style.display = "block";
+      updateStats();
     }
 
     if (message.type == "start") {
@@ -101,12 +109,7 @@ function onDeviceReady() {
     ws.send(JSON.stringify(message));
   });
 
-  // Dimensions du plateau
-  const boardSize = 8; // 8x8 cases
-  const cellSize = 50; // Chaque case est de 50x50 pixels
-  const board = document.getElementById("board");
-  const pieces = document.getElementById("pieces");
-  let selectedPiece = null; // Variable pour stocker le pion sélectionné
+  
 
   // Fonction pour générer le plateau
   function generateBoard() {
@@ -329,6 +332,15 @@ function onDeviceReady() {
 
     }
   }
+
+  function updateStats() {
+    message = {
+      type: "demandeStats",
+      username: username,
+    };
+    ws.send(JSON.stringify(message));
+  }
+
   // Générer le plateau et les pions
   generateBoard();
   generatePieces();
