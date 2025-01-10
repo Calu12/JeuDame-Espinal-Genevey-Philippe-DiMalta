@@ -94,7 +94,7 @@ function onDeviceReady() {
   //envoie un message de demande demande de partie au serveur node, il est de type demande et contient le nom d'utilisateur
   document.getElementById("toJeu").addEventListener("click", function () {
     message = {
-      type: "startGame",
+      type: "fileAttente",
       username: username,
     };
 
