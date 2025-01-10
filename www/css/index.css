@@ -59,6 +59,36 @@ body {
     }
 }
 
+@media screen and (min-width: 900px) {
+    .app {
+        width: 600px; 
+        height: auto;
+        margin: 0 auto; 
+        padding: 50px 0 50px 0;
+        position: relative; /* Ajustement pour ordinateur */
+        bottom: auto;
+        right: auto;
+        left : auto;
+        display: block;
+        background-position:left center;
+    }
+    body {
+        height: auto;
+        margin: 0 auto; 
+        padding: 0 0 0 0;
+        position: relative; /* Ajustement pour ordinateur */
+        bottom: auto;
+        right: auto;
+        left: auto;
+    }
+    #loginPage {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+}
+
 h1 {
     font-size:24px;
     font-weight:normal;
@@ -116,7 +146,16 @@ h1 {
 }
 
 #jeu {
-    display: block;
+    display: none;
+}
+
+
+
+.form-group { 
+    display: flex; 
+    flex-direction: column; 
+    margin-bottom: 15px;
+    margin-top: 15px; 
 }
 
 #board-container {
@@ -124,6 +163,24 @@ h1 {
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: #f0f0f0;
+    background-color: #333333;
+  }
+
+  button:hover {
+    cursor: pointer;
+  }
+
+  #loginDiv input {
+    border-radius: 10px;
+    padding: 10px;
+  }
+
+  .auth-form-body {
+    border: 1px solid; /* Ajoute une bordure */ 
+    border-radius: 10px; /* Arrondit les coins */ 
+    padding: 20px; /* Ajoute du padding à l'intérieur de la bordure */ 
+    background-color: #333333; 
+    margin: 20px;
+
   }
   
