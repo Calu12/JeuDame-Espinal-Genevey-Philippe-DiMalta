@@ -169,7 +169,7 @@ function onDeviceReady() {
       document.querySelectorAll('rect[fill="rgba(0, 255, 0, 0.5)"]').forEach((highlightedCell) => {
         highlightedCell.setAttribute("fill", (parseInt(highlightedCell.getAttribute("data-row")) + parseInt(highlightedCell.getAttribute("data-col"))) % 2 === 1 ? "#000000" : "#ffffff");
       });
-    
+
     }
 
     // Sélectionner le nouveau pion
@@ -212,7 +212,7 @@ function onDeviceReady() {
 
         const isWhite = selectedPiece.getAttribute("fill") === "#ffffff"; // Blanc
         const isForward = (isWhite && dr === -1) || (!isWhite && dr === 1); // Avant
-      
+
         // Vérifier que la couleur du cercle est opposée
         if (
           intermediateCircle &&
@@ -221,7 +221,7 @@ function onDeviceReady() {
         ) {
           const nextRow = targetRow + dr;
           const nextCol = targetCol + dc;
-      
+
           // Vérifier la case après le pion
           const nextCell = document.querySelector(`[data-row='${nextRow}'][data-col='${nextCol}']`);
           const circleInNextCell = Array.from(document.querySelectorAll("circle")).some(
@@ -229,7 +229,7 @@ function onDeviceReady() {
               parseInt(circle.getAttribute("data-row")) === nextRow &&
               parseInt(circle.getAttribute("data-col")) === nextCol
           );
-      
+
           // Surligner la case suivante si elle est vide
           if (nextCell && !circleInNextCell) {
             nextCell.setAttribute("fill", "rgba(0, 255, 0, 0.5)");
@@ -237,7 +237,7 @@ function onDeviceReady() {
           }
         }
       }
-      
+
     }
   }
 
@@ -252,6 +252,26 @@ function onDeviceReady() {
         console.log("Déplacement non valide.");
         return; // Annuler l'action si la cellule n'est pas en surbrillance
       }
+
+      // Déterminer les coordonnées intermédiaires (pour un saut)
+      const currentRow = parseInt(selectedPiece.getAttribute("data-row"));
+      const currentCol = parseInt(selectedPiece.getAttribute("data-col"));
+      const midRow = (currentRow + row) / 2;
+      const midCol = (currentCol + col) / 2;
+
+      // Vérifier si un pion est présent sur la case intermédiaire
+      const capturedPiece = Array.from(document.querySelectorAll("circle")).find(
+        (circle) =>
+          parseInt(circle.getAttribute("data-row")) === midRow &&
+          parseInt(circle.getAttribute("data-col")) === midCol
+      );
+
+      // Si un pion est capturé, le retirer
+      if (capturedPiece) {
+        pieces.removeChild(capturedPiece);
+        console.log("Pion capturé :", capturedPiece);
+      }
+
       //envoie un message de déplacement au serveur node, il est de type move et contient les coordonnées de départ et d'arrivée
       message = {
         type: "move",
