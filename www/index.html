@@ -64,7 +64,6 @@
 
     <div id="statsPage">
       <button id="toJeu">Chercher une partie</button>
-      <p id="textRecherche"></p>
       <h1>Statistiques</h1>
       <table></table>
     </div>
@@ -73,9 +72,11 @@
       <h1 id="couleurJoueur"></h1>
       <h2 id="tourJoueur"></h2>
       <div id="board-container">
-        <h1 id="nameTurn"></h1>
-        <h1 id="nameBlack"></h1>
-        <div>
+        <div class="top-elements">
+          <h1 id="nameTurn" class="textJeu"></h1>
+          <h1 id="nameBlack" class="textJeu"></h1>
+        </div>
+        <div class="middle-elements">
           <svg id="checkerboard" xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">
             <!-- Plateau de jeu -->
             <g id="board">
@@ -87,7 +88,9 @@
             </g>
           </svg>
         </div>
-        <h1 id="nameWhite"></h1>
+        <div class="bottom-elements">
+          <h1 id="nameWhite" class="textJeu"></h1>
+        </div>
       </div>
     </div>
   </div>

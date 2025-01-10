@@ -69,7 +69,7 @@ function onDeviceReady() {
       divStats.style.display = "none";
       divJeu.style.display = "block";
       btnPlay.disabled = false;
-      btnPlay.innerText = "";
+      btnPlay.innerText = "Chercher une partie";
       if (message.joueur1 == username) {
         isjoueurWhite = message.joueur1Color == "W";
         adversaire = message.joueur2;
