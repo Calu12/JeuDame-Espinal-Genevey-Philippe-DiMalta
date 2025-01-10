@@ -37,6 +37,7 @@ function onDeviceReady() {
   let username = null;
   let isWhite = null;
   let adversaire = null;
+  let highlightedCells = [];
 
   ws.onopen = function () {
     console.log("Connecté");
@@ -165,12 +166,39 @@ function onDeviceReady() {
       // Si un autre pion est déjà sélectionné, désélectionner
       selectedPiece.setAttribute("stroke", "#333");
       selectedPiece.setAttribute("stroke-width", "2");
+      document.querySelectorAll('rect[fill="rgba(0, 255, 0, 0.5)"]').forEach((highlightedCell) => {
+        highlightedCell.setAttribute("fill", (parseInt(highlightedCell.getAttribute("data-row")) + parseInt(highlightedCell.getAttribute("data-col"))) % 2 === 1 ? "#000000" : "#ffffff");
+      });
+    
     }
 
     // Sélectionner le nouveau pion
     selectedPiece = piece;
     selectedPiece.setAttribute("stroke", "yellow");
     selectedPiece.setAttribute("stroke-width", "4");
+
+    // Mettre en surbrillance les déplacements possibles 
+    highlightedCells = []
+    const currentRow = parseInt(selectedPiece.getAttribute("data-row"));
+    const currentCol = parseInt(selectedPiece.getAttribute("data-col"));
+    const directions = [
+      [-1, 0],  // Haut
+      [1, 0],   // Bas
+      [0, -1],  // Gauche
+      [0, 1]    // Droite
+    ];
+
+    // Surligner les cases valides
+    for (let [dr, dc] of directions) {
+      const targetRow = currentRow + dr;
+      const targetCol = currentCol + dc;
+      const cell = document.querySelector(`[data-row='${targetRow}'][data-col='${targetCol}']`);
+      console.log(cell)
+      if (cell) {
+        cell.setAttribute("fill", "rgba(0, 255, 0, 0.5)");
+        highlightedCells.push(cell);
+      }
+    }
   }
 
   // Fonction appelée lorsqu'une case est cliquée
@@ -200,6 +228,11 @@ function onDeviceReady() {
       selectedPiece.setAttribute("stroke", "#333");
       selectedPiece.setAttribute("stroke-width", "2");
       selectedPiece = null;
+
+      // Enlever la surbrillance des anciens déplacements possibles
+      document.querySelectorAll('rect[fill="rgba(0, 255, 0, 0.5)"]').forEach((highlightedCell) => {
+        highlightedCell.setAttribute("fill", (parseInt(highlightedCell.getAttribute("data-row")) + parseInt(highlightedCell.getAttribute("data-col"))) % 2 === 1 ? "#000000" : "#ffffff");
+      });
 
       ws.send(JSON.stringify(message));
     }
