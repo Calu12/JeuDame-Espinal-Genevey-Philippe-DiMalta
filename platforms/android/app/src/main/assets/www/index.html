@@ -18,9 +18,10 @@
     under the License.
 -->
 <html>
-    <head>
-        <meta charset="utf-8">
-        <!--
+
+<head>
+  <meta charset="utf-8" />
+  <!--
         Customize this policy to fit your own app's needs. For more guidance, please refer to the docs:
             https://cordova.apache.org/docs/en/latest/
         Some notes:
@@ -28,53 +29,63 @@
             * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
                 * Enable inline JS: add 'unsafe-inline' to default-src
         -->
-        <meta http-equiv="Content-Security-Policy" content="connect-src *; default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;script-src 'self' http://* 'unsafe-inline' 'unsafe-eval' ;">
-        <meta name="format-detection" content="telephone=no">
-        <meta name="msapplication-tap-highlight" content="no">
-        <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
-        <meta name="color-scheme" content="light dark">
-        <link rel="stylesheet" href="css/index.css">
-        <title>Hello World</title>
-    </head>
-    <body>
-        <div class="app">
-            <div id="loginPage">
-                <div id="loginDiv" >
-                    <label for="username">Username</label>
-                    <input type="text" name="username" id="username">
-                    <label for="password">Password</label>
-                    <input type="password" name="password" id="password">
-                    <div><button id="loginButton">Login</button></div>
-                </div>
-            </div>
+  <meta http-equiv="Content-Security-Policy"
+    content="connect-src *; default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;script-src 'self' http://* 'unsafe-inline' 'unsafe-eval' ;" />
+  <meta name="format-detection" content="telephone=no" />
+  <meta name="msapplication-tap-highlight" content="no" />
+  <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark" />
+  <link rel="stylesheet" href="css/index.css" />
+  <title>Hello World</title>
+</head>
 
-            <div id="logoutPage">
-                <button id="logoutButton">Logout</button>
-            </div>
-
-            <div id="statsPage">
-
-                <button id="toJeu">Jeu</button>
-            </div>
-
-            <div id="jeu">
-                <h1 id="couleurJoueur"></h1>
-                <h2 id="tourJoueur"></h2>
-                <div id="board-container">
-                    <svg id="checkerboard" xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">
-                      <!-- Plateau de jeu -->
-                      <g id="board">
-                        <!-- Les cases sont générées dynamiquement par JavaScript -->
-                      </g>
-                      <!-- Pions -->
-                      <g id="pieces">
-                        <!-- Les pions seront générés dynamiquement par JavaScript -->
-                      </g>
-                    </svg>
-                  </div>
-            </div>
+<body>
+  <div class="app">
+    <div id="loginPage">
+      <div id="loginDiv">
+        <h1>Login to draughts game</h1>
+        <div class="auth-form-body">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" name="username" id="username" placeholder="Enter your username" />
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" placeholder="Enter your password" />
+          </div>
+          <div><button id="loginButton">Login</button></div>
         </div>
-        <script src="cordova.js"></script>
-        <script src="js/index.js"></script>
-    </body>
+      </div>
+    </div>
+
+    <div id="logoutPage">
+      <button id="logoutButton">Logout</button>
+    </div>
+
+    <div id="statsPage">
+      <button id="toJeu">Play</button>
+      <table></table>
+    </div>
+
+    <div id="jeu">
+      <h1 id="couleurJoueur"></h1>
+      <h2 id="tourJoueur"></h2>
+      <div id="board-container">
+        <svg id="checkerboard" xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">
+          <!-- Plateau de jeu -->
+          <g id="board">
+            <!-- Les cases sont générées dynamiquement par JavaScript -->
+          </g>
+          <!-- Pions -->
+          <g id="pieces">
+            <!-- Les pions seront générés dynamiquement par JavaScript -->
+          </g>
+        </svg>
+      </div>
+    </div>
+  </div>
+  <script src="cordova.js"></script>
+  <script src="js/index.js"></script>
+</body>
+
 </html>
