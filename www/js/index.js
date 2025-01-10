@@ -31,6 +31,7 @@ function onDeviceReady() {
   const divLogout = document.getElementById("logoutPage");
   const inputUsername = document.getElementById("username");
   const inputPassword = document.getElementById("password");
+  const btnPlay = document.getElementById("toJeu");
   const ws = new WebSocket("ws://127.0.0.1:9898/"); //127.0.0.1:9898 pour browser et 10.0.0.2:9898 pour emulateur
 
   //déclaration des variables pour une partie
@@ -65,9 +66,26 @@ function onDeviceReady() {
       updateStats();
     }
 
-    if (message.type == "start") {
+    if (message.type == "debutMatch") {
       divStats.style.display = "none";
       divJeu.style.display = "block";
+      btnPlay.disabled = false;
+      btnPlay.innerText = "";
+      if(message.joueur1 == username){
+        isjoueurWhite = message.joueur1Color == "W";
+        adversaire = message.joueur2;
+      }else{
+        isjoueurWhite = message.joueur2Color == "W";
+        adversaire = message.joueur1;
+      }
+      if(isjoueurWhite){
+        document.getElementById("nameWhite").innerText = username;
+        document.getElementById("nameBlack").innerText = adversaire;
+      }else{
+        document.getElementById("nameWhite").innerText = adversaire;
+        document.getElementById("nameBlack").innerText = username;
+      }
+      myturn = isjoueurWhite;
     }
 
     if (message.type == "move") {
@@ -100,12 +118,13 @@ function onDeviceReady() {
     });
 
   //envoie un message de demande demande de partie au serveur node, il est de type demande et contient le nom d'utilisateur
-  document.getElementById("toJeu").addEventListener("click", function () {
+  btnPlay.addEventListener("click", function () {
+    btnPlay.disabled = true;
+    btnPlay.innerText = "En attente d'un adversaire...";
     message = {
       type: "fileAttente",
       username: username,
     };
-
     ws.send(JSON.stringify(message));
   });
 
@@ -181,7 +200,7 @@ function onDeviceReady() {
 
   // Fonction appelée lorsqu'un pion est cliqué
   function onPieceClick(e, piece) {
-    if (myturn) {
+    if (myturn && piece.getAttribute("fill") === (isjoueurWhite ? "#ffffff" : "#808080")) {
       e.stopPropagation(); // Empêche la propagation pour éviter d'activer d'autres événements
       if (selectedPiece) {
         // Si un autre pion est déjà sélectionné, désélectionner
