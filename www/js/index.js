@@ -54,6 +54,7 @@ function onDeviceReady() {
       username = message.joueur.username;
       divLogin.style.display = "none";
       divStats.style.display = "block";
+      divLogout.style.display = "block";
     }
 
     if (message.type == "start") {
@@ -61,7 +62,7 @@ function onDeviceReady() {
       divJeu.style.display = "block";
     }
 
-    if(message.type == "move"){
+    if (message.type == "move") {
 
     }
   };
@@ -89,6 +90,16 @@ function onDeviceReady() {
       };
       ws.send(JSON.stringify(message));
     });
+
+  //envoie un message de demande demande de partie au serveur node, il est de type demande et contient le nom d'utilisateur
+  document.getElementById("toJeu").addEventListener("click", function () {
+    message = {
+      type: "startGame",
+      username: username,
+    };
+
+    ws.send(JSON.stringify(message));
+  });
 
   // Dimensions du plateau
   const boardSize = 8; // 8x8 cases
@@ -272,7 +283,7 @@ function onDeviceReady() {
         couleur:
           selectedPiece.getAttribute("fill") == "#ffffff" ? "white" : "black",
       };
-      
+
       ws.send(JSON.stringify(message));
 
       // Déterminer les coordonnées intermédiaires (pour un saut)
@@ -314,22 +325,12 @@ function onDeviceReady() {
         highlightedCell.setAttribute("fill", (parseInt(highlightedCell.getAttribute("data-row")) + parseInt(highlightedCell.getAttribute("data-col"))) % 2 === 1 ? "#000000" : "#ffffff");
       });
 
-      
+
 
     }
-
-    //envoie un message de demande demande de partie au serveur node, il est de type demande et contient le nom d'utilisateur
-    document.getElementById("toJeu").addEventListener("click", function () {
-      message = {
-        type: "startGame",
-        username: username,
-      };
-
-      ws.send(JSON.stringify(message));
-    });
-
-    // Générer le plateau et les pions
-    generateBoard();
-    generatePieces();
   }
+  // Générer le plateau et les pions
+  generateBoard();
+  generatePieces();
+
 }
