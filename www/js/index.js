@@ -86,6 +86,7 @@ function onDeviceReady() {
         document.getElementById("nameBlack").innerText = username;
       }
       myturn = isjoueurWhite;
+      document.getElementById("nameTurn").innerText = myturn ? "À vous de jouer" : "À l'adversaire de jouer";
     }
 
     if (message.type == "move") {

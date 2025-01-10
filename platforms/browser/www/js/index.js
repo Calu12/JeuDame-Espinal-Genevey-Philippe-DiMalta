@@ -31,13 +31,23 @@ function onDeviceReady() {
   const divLogout = document.getElementById("logoutPage");
   const inputUsername = document.getElementById("username");
   const inputPassword = document.getElementById("password");
+  const btnPlay = document.getElementById("toJeu");
   const ws = new WebSocket("ws://127.0.0.1:9898/"); //127.0.0.1:9898 pour browser et 10.0.0.2:9898 pour emulateur
 
   //déclaration des variables pour une partie
   let username = null;
-  let isWhite = null;
+  let isjoueurWhite = null;
   let adversaire = null;
   let highlightedCells = [];
+  let myturn = false;
+  let selectedCell = null;
+
+  // Dimensions du plateau
+  const boardSize = 8; // 8x8 cases
+  const cellSize = 50; // Chaque case est de 50x50 pixels
+  const board = document.getElementById("board");
+  const pieces = document.getElementById("pieces");
+  let selectedPiece = null; // Variable pour stocker le pion sélectionné
 
   ws.onopen = function () {
     console.log("Connecté");
@@ -48,22 +58,45 @@ function onDeviceReady() {
     message = JSON.parse(e.data);
     console.log("Message:", e.data);
 
-    if (message.type == "login" && message.response) {
-      username = message.username;
+    if (message.type == "login" && message.success) {
+      username = message.joueur.username;
       divLogin.style.display = "none";
       divStats.style.display = "block";
+      divLogout.style.display = "block";
+      updateStats();
     }
 
-    if (message.type == "start") {
+    if (message.type == "debutMatch") {
       divStats.style.display = "none";
       divJeu.style.display = "block";
+      btnPlay.disabled = false;
+      btnPlay.innerText = "";
+      if(message.joueur1 == username){
+        isjoueurWhite = message.joueur1Color == "W";
+        adversaire = message.joueur2;
+      }else{
+        isjoueurWhite = message.joueur2Color == "W";
+        adversaire = message.joueur1;
+      }
+      if(isjoueurWhite){
+        document.getElementById("nameWhite").innerText = username;
+        document.getElementById("nameBlack").innerText = adversaire;
+      }else{
+        document.getElementById("nameWhite").innerText = adversaire;
+        document.getElementById("nameBlack").innerText = username;
+      }
+      myturn = isjoueurWhite;
+    }
+
+    if (message.type == "move") {
+
     }
   };
   ws.onclose = function () {
     console.log("Fermé");
   };
 
-  //envoie un message de connection au serveur node, il est de tyep login et contient le nom d'utilisateur et le motde passe
+  //envoie un message de connection au serveur node, il est de type login et contient le nom d'utilisateur et le motde passe
   document.getElementById("loginButton").addEventListener("click", function () {
     message = {
       type: "login",
@@ -79,17 +112,23 @@ function onDeviceReady() {
     .addEventListener("click", function () {
       message = {
         type: "logout",
-        username: "", //username dans local storage à terme
+        username: username, //username dans local storage à terme
       };
       ws.send(JSON.stringify(message));
     });
 
-  // Dimensions du plateau
-  const boardSize = 8; // 8x8 cases
-  const cellSize = 50; // Chaque case est de 50x50 pixels
-  const board = document.getElementById("board");
-  const pieces = document.getElementById("pieces");
-  let selectedPiece = null; // Variable pour stocker le pion sélectionné
+  //envoie un message de demande demande de partie au serveur node, il est de type demande et contient le nom d'utilisateur
+  btnPlay.addEventListener("click", function () {
+    btnPlay.disabled = true;
+    btnPlay.innerText = "En attente d'un adversaire...";
+    message = {
+      type: "fileAttente",
+      username: username,
+    };
+    ws.send(JSON.stringify(message));
+  });
+
+  
 
   // Fonction pour générer le plateau
   function generateBoard() {
@@ -161,89 +200,91 @@ function onDeviceReady() {
 
   // Fonction appelée lorsqu'un pion est cliqué
   function onPieceClick(e, piece) {
-    e.stopPropagation(); // Empêche la propagation pour éviter d'activer d'autres événements
-    if (selectedPiece) {
-      // Si un autre pion est déjà sélectionné, désélectionner
-      selectedPiece.setAttribute("stroke", "#333");
-      selectedPiece.setAttribute("stroke-width", "2");
-      document.querySelectorAll('rect[fill="rgba(0, 255, 0, 0.5)"]').forEach((highlightedCell) => {
-        highlightedCell.setAttribute("fill", (parseInt(highlightedCell.getAttribute("data-row")) + parseInt(highlightedCell.getAttribute("data-col"))) % 2 === 1 ? "#000000" : "#ffffff");
-      });
+    if (myturn && piece.getAttribute("fill") === (isjoueurWhite ? "#ffffff" : "#808080")) {
+      e.stopPropagation(); // Empêche la propagation pour éviter d'activer d'autres événements
+      if (selectedPiece) {
+        // Si un autre pion est déjà sélectionné, désélectionner
+        selectedPiece.setAttribute("stroke", "#333");
+        selectedPiece.setAttribute("stroke-width", "2");
+        document.querySelectorAll('rect[fill="rgba(0, 255, 0, 0.5)"]').forEach((highlightedCell) => {
+          highlightedCell.setAttribute("fill", (parseInt(highlightedCell.getAttribute("data-row")) + parseInt(highlightedCell.getAttribute("data-col"))) % 2 === 1 ? "#000000" : "#ffffff");
+        });
 
-    }
-
-    // Sélectionner le nouveau pion
-    selectedPiece = piece;
-    selectedPiece.setAttribute("stroke", "yellow");
-    selectedPiece.setAttribute("stroke-width", "4");
-
-    // Mettre en surbrillance les déplacements possibles 
-    highlightedCells = []
-    const currentRow = parseInt(selectedPiece.getAttribute("data-row"));
-    const currentCol = parseInt(selectedPiece.getAttribute("data-col"));
-    const directions = [
-      [-1, -1], // Haut-gauche
-      [-1, 1],  // Haut-droite
-      [1, -1],  // Bas-gauche
-      [1, 1],   // Bas-droite
-    ];
-
-    // Surligner les cases valides
-    for (let [dr, dc] of directions) {
-      const targetRow = currentRow + dr;
-      const targetCol = currentCol + dc;
-      const cell = document.querySelector(`[data-row='${targetRow}'][data-col='${targetCol}']`);
-      const circleInCell = Array.from(document.querySelectorAll("circle")).some(
-        (circle) =>
-          parseInt(circle.getAttribute("data-row")) === targetRow &&
-          parseInt(circle.getAttribute("data-col")) === targetCol
-      );
-      if (cell && !circleInCell) {
-        cell.setAttribute("fill", "rgba(0, 255, 0, 0.5)");
-        highlightedCells.push(cell);
       }
-      if (cell && circleInCell) {
-        // Trouver le cercle dans la case intermédiaire
-        const intermediateCircle = Array.from(document.querySelectorAll("circle")).find(
+
+      // Sélectionner le nouveau pion
+      selectedPiece = piece;
+      selectedPiece.setAttribute("stroke", "yellow");
+      selectedPiece.setAttribute("stroke-width", "4");
+
+      // Mettre en surbrillance les déplacements possibles 
+      highlightedCells = []
+      const currentRow = parseInt(selectedPiece.getAttribute("data-row"));
+      const currentCol = parseInt(selectedPiece.getAttribute("data-col"));
+      const directions = [
+        [-1, -1], // Haut-gauche
+        [-1, 1],  // Haut-droite
+        [1, -1],  // Bas-gauche
+        [1, 1],   // Bas-droite
+      ];
+
+      // Surligner les cases valides
+      for (let [dr, dc] of directions) {
+        const targetRow = currentRow + dr;
+        const targetCol = currentCol + dc;
+        const cell = document.querySelector(`[data-row='${targetRow}'][data-col='${targetCol}']`);
+        const circleInCell = Array.from(document.querySelectorAll("circle")).some(
           (circle) =>
             parseInt(circle.getAttribute("data-row")) === targetRow &&
             parseInt(circle.getAttribute("data-col")) === targetCol
         );
-
-        const isWhite = selectedPiece.getAttribute("fill") === "#ffffff"; // Blanc
-        const isForward = (isWhite && dr === -1) || (!isWhite && dr === 1); // Avant
-
-        // Vérifier que la couleur du cercle est opposée
-        if (
-          intermediateCircle &&
-          intermediateCircle.getAttribute("fill") !== selectedPiece.getAttribute("fill") &&
-          isForward
-        ) {
-          const nextRow = targetRow + dr;
-          const nextCol = targetCol + dc;
-
-          // Vérifier la case après le pion
-          const nextCell = document.querySelector(`[data-row='${nextRow}'][data-col='${nextCol}']`);
-          const circleInNextCell = Array.from(document.querySelectorAll("circle")).some(
+        if (cell && !circleInCell) {
+          cell.setAttribute("fill", "rgba(0, 255, 0, 0.5)");
+          highlightedCells.push(cell);
+        }
+        if (cell && circleInCell) {
+          // Trouver le cercle dans la case intermédiaire
+          const intermediateCircle = Array.from(document.querySelectorAll("circle")).find(
             (circle) =>
-              parseInt(circle.getAttribute("data-row")) === nextRow &&
-              parseInt(circle.getAttribute("data-col")) === nextCol
+              parseInt(circle.getAttribute("data-row")) === targetRow &&
+              parseInt(circle.getAttribute("data-col")) === targetCol
           );
 
-          // Surligner la case suivante si elle est vide
-          if (nextCell && !circleInNextCell) {
-            nextCell.setAttribute("fill", "rgba(0, 255, 0, 0.5)");
-            highlightedCells.push(nextCell);
+          const isWhite = selectedPiece.getAttribute("fill") === "#ffffff"; // Blanc
+          const isForward = (isWhite && dr === -1) || (!isWhite && dr === 1); // Avant
+
+          // Vérifier que la couleur du cercle est opposée
+          if (
+            intermediateCircle &&
+            intermediateCircle.getAttribute("fill") !== selectedPiece.getAttribute("fill") &&
+            isForward
+          ) {
+            const nextRow = targetRow + dr;
+            const nextCol = targetCol + dc;
+
+            // Vérifier la case après le pion
+            const nextCell = document.querySelector(`[data-row='${nextRow}'][data-col='${nextCol}']`);
+            const circleInNextCell = Array.from(document.querySelectorAll("circle")).some(
+              (circle) =>
+                parseInt(circle.getAttribute("data-row")) === nextRow &&
+                parseInt(circle.getAttribute("data-col")) === nextCol
+            );
+
+            // Surligner la case suivante si elle est vide
+            if (nextCell && !circleInNextCell) {
+              nextCell.setAttribute("fill", "rgba(0, 255, 0, 0.5)");
+              highlightedCells.push(nextCell);
+            }
           }
         }
-      }
 
+      }
     }
   }
 
   // Fonction appelée lorsqu'une case est cliquée
   function onCellClick(e, row, col) {
-    if (selectedPiece) {
+    if (myturn && selectedPiece) {
       // Vérifier si la case cliquée est parmi les cases en surbrillance
       const clickedCell = document.querySelector(`[data-row='${row}'][data-col='${col}']`);
       const isHighlighted = highlightedCells.includes(clickedCell);
@@ -252,6 +293,20 @@ function onDeviceReady() {
         console.log("Déplacement non valide.");
         return; // Annuler l'action si la cellule n'est pas en surbrillance
       }
+
+      //envoie un message de déplacement au serveur node, il est de type move et contient les coordonnées de départ et d'arrivée
+      message = {
+        type: "move",
+        username: username,
+        x_depart: selectedPiece.getAttribute("data-col"),
+        y_depart: selectedPiece.getAttribute("data-row"),
+        x_arrivee: col,
+        y_arrivee: row,
+        couleur:
+          selectedPiece.getAttribute("fill") == "#ffffff" ? "white" : "black",
+      };
+
+      ws.send(JSON.stringify(message));
 
       // Déterminer les coordonnées intermédiaires (pour un saut)
       const currentRow = parseInt(selectedPiece.getAttribute("data-row"));
@@ -272,17 +327,7 @@ function onDeviceReady() {
         console.log("Pion capturé :", capturedPiece);
       }
 
-      //envoie un message de déplacement au serveur node, il est de type move et contient les coordonnées de départ et d'arrivée
-      message = {
-        type: "move",
-        username: username,
-        x_depart: selectedPiece.getAttribute("data-col"),
-        y_depart: selectedPiece.getAttribute("data-row"),
-        x_arrivee: col,
-        y_arrivee: row,
-        couleur:
-          selectedPiece.getAttribute("fill") == "#ffffff" ? "white" : "black",
-      };
+
 
       // Déplacer le pion vers la nouvelle case
       selectedPiece.setAttribute("cx", col * cellSize + cellSize / 2);
@@ -302,21 +347,21 @@ function onDeviceReady() {
         highlightedCell.setAttribute("fill", (parseInt(highlightedCell.getAttribute("data-row")) + parseInt(highlightedCell.getAttribute("data-col"))) % 2 === 1 ? "#000000" : "#ffffff");
       });
 
-      ws.send(JSON.stringify(message));
+
+
     }
   }
 
-  //envoie un message de demande demande de partie au serveur node, il est de type demande et contient le nom d'utilisateur
-  document.getElementById("toJeu").addEventListener("click", function () {
+  function updateStats() {
     message = {
-      type: "startGame",
+      type: "demandeStats",
       username: username,
     };
-
     ws.send(JSON.stringify(message));
-  });
+  }
 
   // Générer le plateau et les pions
   generateBoard();
   generatePieces();
+
 }
