@@ -146,7 +146,7 @@ h1 {
 }
 
 #jeu {
-    display: block;
+    display: none;
 }
 
 #toJeu {
@@ -190,5 +190,10 @@ h1 {
     background-color: #333333; 
     margin: 20px;
 
+  }
+
+  #nameBlack {
+    color: black;
+    border: 1px solid white;
   }
   
