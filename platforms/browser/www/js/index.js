@@ -182,10 +182,10 @@ function onDeviceReady() {
     const currentRow = parseInt(selectedPiece.getAttribute("data-row"));
     const currentCol = parseInt(selectedPiece.getAttribute("data-col"));
     const directions = [
-      [-1, 0],  // Haut
-      [1, 0],   // Bas
-      [0, -1],  // Gauche
-      [0, 1]    // Droite
+      [-1, -1], // Haut-gauche
+      [-1, 1],  // Haut-droite
+      [1, -1],  // Bas-gauche
+      [1, 1],   // Bas-droite
     ];
 
     // Surligner les cases valides
@@ -193,17 +193,65 @@ function onDeviceReady() {
       const targetRow = currentRow + dr;
       const targetCol = currentCol + dc;
       const cell = document.querySelector(`[data-row='${targetRow}'][data-col='${targetCol}']`);
-      console.log(cell)
-      if (cell) {
+      const circleInCell = Array.from(document.querySelectorAll("circle")).some(
+        (circle) =>
+          parseInt(circle.getAttribute("data-row")) === targetRow &&
+          parseInt(circle.getAttribute("data-col")) === targetCol
+      );
+      if (cell && !circleInCell) {
         cell.setAttribute("fill", "rgba(0, 255, 0, 0.5)");
         highlightedCells.push(cell);
       }
+      if (cell && circleInCell) {
+        // Trouver le cercle dans la case intermédiaire
+        const intermediateCircle = Array.from(document.querySelectorAll("circle")).find(
+          (circle) =>
+            parseInt(circle.getAttribute("data-row")) === targetRow &&
+            parseInt(circle.getAttribute("data-col")) === targetCol
+        );
+
+        const isWhite = selectedPiece.getAttribute("fill") === "#ffffff"; // Blanc
+        const isForward = (isWhite && dr === -1) || (!isWhite && dr === 1); // Avant
+      
+        // Vérifier que la couleur du cercle est opposée
+        if (
+          intermediateCircle &&
+          intermediateCircle.getAttribute("fill") !== selectedPiece.getAttribute("fill") &&
+          isForward
+        ) {
+          const nextRow = targetRow + dr;
+          const nextCol = targetCol + dc;
+      
+          // Vérifier la case après le pion
+          const nextCell = document.querySelector(`[data-row='${nextRow}'][data-col='${nextCol}']`);
+          const circleInNextCell = Array.from(document.querySelectorAll("circle")).some(
+            (circle) =>
+              parseInt(circle.getAttribute("data-row")) === nextRow &&
+              parseInt(circle.getAttribute("data-col")) === nextCol
+          );
+      
+          // Surligner la case suivante si elle est vide
+          if (nextCell && !circleInNextCell) {
+            nextCell.setAttribute("fill", "rgba(0, 255, 0, 0.5)");
+            highlightedCells.push(nextCell);
+          }
+        }
+      }
+      
     }
   }
 
   // Fonction appelée lorsqu'une case est cliquée
   function onCellClick(e, row, col) {
     if (selectedPiece) {
+      // Vérifier si la case cliquée est parmi les cases en surbrillance
+      const clickedCell = document.querySelector(`[data-row='${row}'][data-col='${col}']`);
+      const isHighlighted = highlightedCells.includes(clickedCell);
+
+      if (!isHighlighted) {
+        console.log("Déplacement non valide.");
+        return; // Annuler l'action si la cellule n'est pas en surbrillance
+      }
       //envoie un message de déplacement au serveur node, il est de type move et contient les coordonnées de départ et d'arrivée
       message = {
         type: "move",
