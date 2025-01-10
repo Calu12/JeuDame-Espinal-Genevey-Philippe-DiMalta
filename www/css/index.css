@@ -149,7 +149,15 @@ h1 {
     display: none;
 }
 
+#toJeu {
+    padding: 10px; font-size: 20px; 
+    border-radius: 10px; 
+    background-color:#e00000;
+}
 
+#toJeu:hover {
+    background-color:#e0000090;
+}
 
 .form-group { 
     display: flex; 
