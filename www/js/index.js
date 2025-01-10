@@ -40,7 +40,6 @@ function onDeviceReady() {
   let adversaire = null;
   let highlightedCells = [];
   let myturn = false;
-  let selectedCell = null;
 
   // Dimensions du plateau
   const boardSize = 8; // 8x8 cases
@@ -89,8 +88,53 @@ function onDeviceReady() {
       document.getElementById("nameTurn").innerText = myturn ? "À vous de jouer" : "À l'adversaire de jouer";
     }
 
-    if (message.type == "move") {
+    if (message.type == "moveReturn") {
 
+      // Déterminer les coordonnées intermédiaires (pour un saut)
+      const currentRow = message.x_depart;
+      const currentCol = message.y_depart;
+      const midRow = (currentRow + x_arrivee) / 2;
+      const midCol = (currentCol + y_arrivee) / 2;
+
+      // Vérifier si un pion est présent sur la case intermédiaire
+      const capturedPiece = Array.from(document.querySelectorAll("circle")).find(
+        (circle) =>
+          parseInt(circle.getAttribute("data-row")) === midRow &&
+          parseInt(circle.getAttribute("data-col")) === midCol
+      );
+
+      // Si un pion est capturé, le retirer
+      if (capturedPiece) {
+        pieces.removeChild(capturedPiece);
+        console.log("Pion capturé :", capturedPiece);
+      }
+
+      // Trouver le pion à déplacer
+      const piece = Array.from(document.querySelectorAll("circle")).find(
+        (circle) =>
+          parseInt(circle.getAttribute("data-row")) === currentRow &&
+          parseInt(circle.getAttribute("data-col")) === currentCol
+      );
+
+      // Déplacer le pion vers la nouvelle case
+      piece.setAttribute("cx", col * cellSize + cellSize / 2);
+      piece.setAttribute("cy", row * cellSize + cellSize / 2);
+
+      // Mettre à jour les coordonnées du pion
+      piece.setAttribute("data-row", row);
+      piece.setAttribute("data-col", col);
+
+      // Désélectionner le pion
+      piece.setAttribute("stroke", "#333");
+      piece.setAttribute("stroke-width", "2");
+      selectedPiece = null;
+
+      // Enlever la surbrillance des anciens déplacements possibles
+      document.querySelectorAll('rect[fill="rgba(0, 255, 0, 0.5)"]').forEach((highlightedCell) => {
+        highlightedCell.setAttribute("fill", (parseInt(highlightedCell.getAttribute("data-row")) + parseInt(highlightedCell.getAttribute("data-col"))) % 2 === 1 ? "#000000" : "#ffffff");
+      });
+
+      myturn = !myturn;
     }
   };
   ws.onclose = function () {
@@ -309,44 +353,7 @@ function onDeviceReady() {
 
       ws.send(JSON.stringify(message));
 
-      // Déterminer les coordonnées intermédiaires (pour un saut)
-      const currentRow = parseInt(selectedPiece.getAttribute("data-row"));
-      const currentCol = parseInt(selectedPiece.getAttribute("data-col"));
-      const midRow = (currentRow + row) / 2;
-      const midCol = (currentCol + col) / 2;
-
-      // Vérifier si un pion est présent sur la case intermédiaire
-      const capturedPiece = Array.from(document.querySelectorAll("circle")).find(
-        (circle) =>
-          parseInt(circle.getAttribute("data-row")) === midRow &&
-          parseInt(circle.getAttribute("data-col")) === midCol
-      );
-
-      // Si un pion est capturé, le retirer
-      if (capturedPiece) {
-        pieces.removeChild(capturedPiece);
-        console.log("Pion capturé :", capturedPiece);
-      }
-
-
-
-      // Déplacer le pion vers la nouvelle case
-      selectedPiece.setAttribute("cx", col * cellSize + cellSize / 2);
-      selectedPiece.setAttribute("cy", row * cellSize + cellSize / 2);
-
-      // Mettre à jour les coordonnées du pion
-      selectedPiece.setAttribute("data-row", row);
-      selectedPiece.setAttribute("data-col", col);
-
-      // Désélectionner le pion
-      selectedPiece.setAttribute("stroke", "#333");
-      selectedPiece.setAttribute("stroke-width", "2");
-      selectedPiece = null;
-
-      // Enlever la surbrillance des anciens déplacements possibles
-      document.querySelectorAll('rect[fill="rgba(0, 255, 0, 0.5)"]').forEach((highlightedCell) => {
-        highlightedCell.setAttribute("fill", (parseInt(highlightedCell.getAttribute("data-row")) + parseInt(highlightedCell.getAttribute("data-col"))) % 2 === 1 ? "#000000" : "#ffffff");
-      });
+      
 
 
 
