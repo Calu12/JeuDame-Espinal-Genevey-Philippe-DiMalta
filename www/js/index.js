@@ -93,10 +93,10 @@ function onDeviceReady() {
     if (message.type == "moveReturn") {
       console.log("Déplacement reçu :", message);
       // Déterminer les coordonnées intermédiaires (pour un saut)
-      const currentRow = message.x_depart;
-      const currentCol = message.y_depart;
-      const midRow = (currentRow + message.x_arrivee) / 2;
-      const midCol = (currentCol + message.y_arrivee) / 2;
+      const currentRow = message.y_depart;
+      const currentCol = message.x_depart;
+      const midRow = (currentRow + message.y_arrivee) / 2;
+      const midCol = (currentCol + message.x_arrivee) / 2;
 
       // Vérifier si un pion est présent sur la case intermédiaire
       const capturedPiece = Array.from(
@@ -127,8 +127,8 @@ function onDeviceReady() {
       piece.setAttribute("cy", message.y_arrivee * cellSize + cellSize / 2);
 
       // Mettre à jour les coordonnées du pion
-      piece.setAttribute("data-row", message.x_arrivee);
-      piece.setAttribute("data-col", message.y_arrivee);
+      piece.setAttribute("data-row", message.y_arrivee);
+      piece.setAttribute("data-col", message.x_arrivee);
 
       // Désélectionner le pion
       piece.setAttribute("stroke", "#333");
@@ -191,9 +191,49 @@ function onDeviceReady() {
 
   // Fonction pour générer le plateau
   function generateBoard() {
+    // Adjust SVG viewBox to leave space for labels
+    const svgPadding = 20; // Space for labels
+    board.setAttribute("width", boardSize * cellSize + svgPadding);
+    board.setAttribute("height", boardSize * cellSize + svgPadding);
+    board.setAttribute(
+      "viewBox",
+      `-20 -20 ${boardSize * cellSize + svgPadding} ${
+        boardSize * cellSize + svgPadding
+      }`
+    );
+
+    // Add column labels (A-H)
+    for (let col = 0; col < boardSize; col++) {
+      const label = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "text"
+      );
+      label.setAttribute("x", col * cellSize + cellSize / 2);
+      label.setAttribute("y", -5); // Position above the board
+      label.setAttribute("text-anchor", "middle");
+      label.setAttribute("font-size", "12");
+      label.setAttribute("fill", "#000");
+      label.textContent = String.fromCharCode(65 + col); // A, B, C, ..., H
+      board.appendChild(label);
+    }
+
+    // Add row labels (7-0 for correct orientation)
+    for (let row = 0; row < boardSize; row++) {
+      const label = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "text"
+      );
+      label.setAttribute("x", -10); // Position to the left of the board
+      label.setAttribute("y", row * cellSize + cellSize / 2 + 4); // Centered vertically
+      label.setAttribute("text-anchor", "middle");
+      label.setAttribute("font-size", "12");
+      label.setAttribute("fill", "#000");
+      label.textContent = row; // Correct orientation (0 at the top, 7 at the bottom)
+      board.appendChild(label);
+    }
+
     for (let row = 0; row < boardSize; row++) {
       for (let col = 0; col < boardSize; col++) {
-        // Alterner les couleurs
         const isBlack = (row + col) % 2 === 1;
         const rect = document.createElementNS(
           "http://www.w3.org/2000/svg",
@@ -210,7 +250,6 @@ function onDeviceReady() {
         rect.setAttribute("stroke-width", "1");
         rect.style.cursor = "pointer";
 
-        // Ajouter un événement de clic sur les cases
         rect.addEventListener("click", (e) => onCellClick(e, row, col));
 
         board.appendChild(rect);

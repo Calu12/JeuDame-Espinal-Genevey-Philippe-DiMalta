@@ -98,6 +98,13 @@ h1 {
     text-align:center;
 }
 
+.textJeu {
+    font-size: 24px;
+    font-weight: normal;
+    color: white; /* Assurez-vous que le texte est lisible sur un fond sombre */
+    margin: 5px 0; /* Réduisez l'espacement entre les éléments */
+  }
+
 .event {
     border-radius:4px;
     color:#FFFFFF;
@@ -168,6 +175,7 @@ h1 {
 
 #board-container {
     display: flex;
+    flex-direction: column; /* Aligne les éléments verticalement */
     justify-content: center;
     align-items: center;
     height: 100vh;
@@ -194,6 +202,26 @@ h1 {
 
   #nameBlack {
     color: black;
-    border: 1px solid white;
   }
+  
+  .top-elements {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centrer horizontalement */
+    margin-bottom: 10px; /* Espacement entre le haut et le plateau */
+  }
+
+  .bottom-elements {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centrer horizontalement */
+    margin-top: 10px; /* Espacement entre le bas et le plateau */
+  }
+
+  .middle-elements {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
   
