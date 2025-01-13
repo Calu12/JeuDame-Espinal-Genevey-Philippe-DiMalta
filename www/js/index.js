@@ -24,7 +24,7 @@ document.addEventListener("deviceready", onDeviceReady, false);
 function onDeviceReady() {
   // Cordova is now initialized. Have fun!
 
-//////////////////////////////////////////////////////////// Définition des variables ////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////// Définition des variables ////////////////////////////////////////////////////////////////////////
 
   //déclaration des variables
   const divLogin = document.getElementById("loginPage");
@@ -53,7 +53,7 @@ function onDeviceReady() {
   const pieces = document.getElementById("pieces");
   let selectedPiece = null; // Variable pour stocker le pion sélectionné
 
-//////////////////////////////////////////////////////////// WebSocket ////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////// WebSocket ////////////////////////////////////////////////////////////////////////
 
   ws.onopen = function () {
     console.log("Connecté");
@@ -68,8 +68,8 @@ function onDeviceReady() {
     if (message.type == "login" && message.success) {
       username = message.joueur.username;
       divLogin.style.display = "none";
-      divStats.style.display = "flex";
-      divLogout.style.display = "flex";
+      divStats.style.display = "block";
+      divLogout.style.display = "block";
       updateStats();
     }
 
@@ -78,7 +78,7 @@ function onDeviceReady() {
       username = null;
       btnPlay.disabled = false;
       btnPlay.innerText = "Chercher une partie";
-      divLogin.style.display = "flex";
+      divLogin.style.display = "block";
       divStats.style.display = "none";
       divLogout.style.display = "none";
       divJeu.style.display = "none";
@@ -91,7 +91,7 @@ function onDeviceReady() {
       generatePieces();
       divStats.style.display = "none";
       divLogout.style.display = "none";
-      divJeu.style.display = "flex";
+      divJeu.style.display = "block";
       btnPlay.disabled = false;
       btnPlay.innerText = "Chercher une partie";
       if (message.joueur1 == username) {
@@ -189,9 +189,9 @@ function onDeviceReady() {
         messageEndGame.innerText = "Dommage, vous avez perdu...";
       }
       divJeu.style.display = "none";
-      divEndGame.style.display = "flex";
+      divEndGame.style.display = "block";
       resetGame();
-      divLogout.style.display = "flex";
+      divLogout.style.display = "block";
     }
 
     //message de mise a jour des stats
@@ -216,7 +216,9 @@ function onDeviceReady() {
       tableStats.appendChild(header);
 
       // Tri des stats par ordre décroissant des victoires
-      const sortedStats = message.stats.sort((a, b) => b.matchesGagnes - a.matchesGagnes);
+      const sortedStats = message.stats.sort(
+        (a, b) => b.matchesGagnes - a.matchesGagnes
+      );
 
       sortedStats.forEach((element) => {
         const tr = document.createElement("tr");
@@ -230,7 +232,7 @@ function onDeviceReady() {
         td3.innerText = element.matchesPerdus;
         td4.innerText = element.matchesNuls;
         td5.innerText = element.matchesJoues;
-        if(element.username == username){
+        if (element.username == username) {
           tr.style.fontweight = "bold";
         }
         tr.appendChild(td1);
@@ -246,9 +248,7 @@ function onDeviceReady() {
     console.log("Fermé");
   };
 
-
-//////////////////////////////////////////////////////////// Buttons Events ////////////////////////////////////////////////////////////////////////
-
+  //////////////////////////////////////////////////////////// Buttons Events ////////////////////////////////////////////////////////////////////////
 
   //envoie un message de connection au serveur node, il est de type login et contient le nom d'utilisateur et le motde passe
   document.getElementById("loginButton").addEventListener("click", function () {
@@ -282,9 +282,6 @@ function onDeviceReady() {
     ws.send(JSON.stringify(message));
   });
 
-
-
-  
   //envoie d'un abandon au serveur node, il est de type abandon et contient le nom d'utilisateur
   document.getElementById("abandonner").addEventListener("click", function () {
     message = {
@@ -294,21 +291,14 @@ function onDeviceReady() {
     ws.send(JSON.stringify(message));
   });
 
-
-
-
   //bouton pour retourner au menu de stats et le mettre à jour
   document.getElementById("toStats").addEventListener("click", function () {
     divEndGame.style.display = "none";
     updateStats();
-    divStats.style.display = "flex";
+    divStats.style.display = "block";
   });
 
-
-
-//////////////////////////////////////////////////////////// Fonctions ////////////////////////////////////////////////////////////////////////
-
-
+  //////////////////////////////////////////////////////////// Fonctions ////////////////////////////////////////////////////////////////////////
 
   // Fonction pour générer le plateau
   function generateBoard() {
@@ -318,7 +308,8 @@ function onDeviceReady() {
     board.setAttribute("height", boardSize * cellSize + svgPadding);
     board.setAttribute(
       "viewBox",
-      `-20 -20 ${boardSize * cellSize + svgPadding} ${boardSize * cellSize + svgPadding
+      `-20 -20 ${boardSize * cellSize + svgPadding} ${
+        boardSize * cellSize + svgPadding
       }`
     );
 
@@ -377,8 +368,6 @@ function onDeviceReady() {
     }
   }
 
-
-
   // Fonction pour générer les pions
   function generatePieces() {
     for (let row = 0; row < boardSize; row++) {
@@ -395,8 +384,6 @@ function onDeviceReady() {
       }
     }
   }
-
-
 
   // Fonction pour créer un pion
   function createPiece(row, col, color) {
@@ -419,8 +406,6 @@ function onDeviceReady() {
 
     pieces.appendChild(piece);
   }
-
-
 
   // Fonction appelée lorsqu'un pion est cliqué
   function onPieceClick(e, piece) {
@@ -499,7 +484,7 @@ function onDeviceReady() {
           if (
             intermediateCircle &&
             intermediateCircle.getAttribute("fill") !==
-            selectedPiece.getAttribute("fill") &&
+              selectedPiece.getAttribute("fill") &&
             isForward
           ) {
             const nextRow = targetRow + dr;
@@ -527,8 +512,6 @@ function onDeviceReady() {
       }
     }
   }
-
-
 
   // Fonction appelée lorsqu'une case est cliquée
   function onCellClick(e, row, col) {
@@ -559,8 +542,6 @@ function onDeviceReady() {
     }
   }
 
-
-
   function updateStats() {
     message = {
       type: "demandeStats",
@@ -568,8 +549,6 @@ function onDeviceReady() {
     };
     ws.send(JSON.stringify(message));
   }
-
-
 
   // Fonction pour réinitialiser les variable de jeu
   function resetGame() {
@@ -580,7 +559,6 @@ function onDeviceReady() {
     isjoueurWhite = null;
     adversaire = null;
   }
-
 
   //////////////////////////////////////////////// Initialisation ////////////////////////////////////////////////////////////////////////
 

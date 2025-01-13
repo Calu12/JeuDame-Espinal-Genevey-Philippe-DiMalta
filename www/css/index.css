@@ -162,6 +162,7 @@ h1 {
 
 #logoutPage {
   display: none;
+  width: 80%;
 }
 
 #statsPage {

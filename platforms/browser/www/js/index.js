@@ -24,6 +24,8 @@ document.addEventListener("deviceready", onDeviceReady, false);
 function onDeviceReady() {
   // Cordova is now initialized. Have fun!
 
+  //////////////////////////////////////////////////////////// Définition des variables ////////////////////////////////////////////////////////////////////////
+
   //déclaration des variables
   const divLogin = document.getElementById("loginPage");
   const divJeu = document.getElementById("jeu");
@@ -32,6 +34,9 @@ function onDeviceReady() {
   const inputUsername = document.getElementById("username");
   const inputPassword = document.getElementById("password");
   const btnPlay = document.getElementById("toJeu");
+  const divEndGame = document.getElementById("endGamePage");
+  const messageEndGame = document.getElementById("endGameMessage");
+  const tableStats = document.getElementById("listeJoueurs");
   const ws = new WebSocket("ws://127.0.0.1:9898/"); //127.0.0.1:9898 pour browser et 10.0.0.2:9898 pour emulateur
 
   //déclaration des variables pour une partie
@@ -41,12 +46,14 @@ function onDeviceReady() {
   let highlightedCells = [];
   let myturn = false;
 
-  // Dimensions du plateau
+  // Dimensions et variables du plateau
   const boardSize = 8; // 8x8 cases
   const cellSize = 50; // Chaque case est de 50x50 pixels
   const board = document.getElementById("board");
   const pieces = document.getElementById("pieces");
   let selectedPiece = null; // Variable pour stocker le pion sélectionné
+
+  //////////////////////////////////////////////////////////// WebSocket ////////////////////////////////////////////////////////////////////////
 
   ws.onopen = function () {
     console.log("Connecté");
@@ -57,6 +64,7 @@ function onDeviceReady() {
     message = JSON.parse(e.data);
     console.log("Message:", e.data);
 
+    //message de connection
     if (message.type == "login" && message.success) {
       username = message.joueur.username;
       divLogin.style.display = "none";
@@ -65,8 +73,24 @@ function onDeviceReady() {
       updateStats();
     }
 
-    if (message.type == "debutMatch") {
+    //message de déconnection
+    if (message.type == "logout" && message.success) {
+      username = null;
+      btnPlay.disabled = false;
+      btnPlay.innerText = "Chercher une partie";
+      divLogin.style.display = "block";
       divStats.style.display = "none";
+      divLogout.style.display = "none";
+      divJeu.style.display = "none";
+      divEndGame.style.display = "none";
+      tableStats.innerHTML = "";
+    }
+
+    //message de debut de partie
+    if (message.type == "debutMatch") {
+      generatePieces();
+      divStats.style.display = "none";
+      divLogout.style.display = "none";
       divJeu.style.display = "block";
       btnPlay.disabled = false;
       btnPlay.innerText = "Chercher une partie";
@@ -90,6 +114,7 @@ function onDeviceReady() {
         : "À l'adversaire de jouer";
     }
 
+    //message de validation d'un mouvement
     if (message.type == "moveReturn") {
       console.log("Déplacement reçu :", message);
       // Déterminer les coordonnées intermédiaires (pour un saut)
@@ -151,11 +176,79 @@ function onDeviceReady() {
         });
 
       myturn = !myturn;
+      document.getElementById("nameTurn").innerText = myturn
+        ? "À vous de jouer"
+        : "À l'adversaire de jouer";
+    }
+
+    //message de fin de partie
+    if (message.type == "finMatch") {
+      if (message.winner == username) {
+        messageEndGame.innerText = "Félicitations, vous avez gagné !";
+      } else {
+        messageEndGame.innerText = "Dommage, vous avez perdu...";
+      }
+      divJeu.style.display = "none";
+      divEndGame.style.display = "block";
+      resetGame();
+      divLogout.style.display = "block";
+    }
+
+    //message de mise a jour des stats
+    if (message.type == "stats") {
+      tableStats.innerHTML = "";
+      const header = document.createElement("tr");
+      const th1 = document.createElement("th");
+      const th2 = document.createElement("th");
+      const th3 = document.createElement("th");
+      const th4 = document.createElement("th");
+      const th5 = document.createElement("th");
+      th1.innerText = "Joueur";
+      th2.innerText = "Victoires";
+      th3.innerText = "Défaites";
+      th4.innerText = "Match nuls";
+      th5.innerText = "Parties jouées";
+      header.appendChild(th1);
+      header.appendChild(th2);
+      header.appendChild(th3);
+      header.appendChild(th4);
+      header.appendChild(th5);
+      tableStats.appendChild(header);
+
+      // Tri des stats par ordre décroissant des victoires
+      const sortedStats = message.stats.sort(
+        (a, b) => b.matchesGagnes - a.matchesGagnes
+      );
+
+      sortedStats.forEach((element) => {
+        const tr = document.createElement("tr");
+        const td1 = document.createElement("td");
+        const td2 = document.createElement("td");
+        const td3 = document.createElement("td");
+        const td4 = document.createElement("td");
+        const td5 = document.createElement("td");
+        td1.innerText = element.username;
+        td2.innerText = element.matchesGagnes;
+        td3.innerText = element.matchesPerdus;
+        td4.innerText = element.matchesNuls;
+        td5.innerText = element.matchesJoues;
+        if (element.username == username) {
+          tr.style.fontweight = "bold";
+        }
+        tr.appendChild(td1);
+        tr.appendChild(td2);
+        tr.appendChild(td3);
+        tr.appendChild(td4);
+        tr.appendChild(td5);
+        tableStats.appendChild(tr);
+      });
     }
   };
   ws.onclose = function () {
     console.log("Fermé");
   };
+
+  //////////////////////////////////////////////////////////// Buttons Events ////////////////////////////////////////////////////////////////////////
 
   //envoie un message de connection au serveur node, il est de type login et contient le nom d'utilisateur et le motde passe
   document.getElementById("loginButton").addEventListener("click", function () {
@@ -178,7 +271,7 @@ function onDeviceReady() {
       ws.send(JSON.stringify(message));
     });
 
-  //envoie un message de demande demande de partie au serveur node, il est de type demande et contient le nom d'utilisateur
+  //envoie un message de demande de partie au serveur node, il est de type demande et contient le nom d'utilisateur
   btnPlay.addEventListener("click", function () {
     btnPlay.disabled = true;
     btnPlay.innerText = "En attente d'un adversaire...";
@@ -188,6 +281,24 @@ function onDeviceReady() {
     };
     ws.send(JSON.stringify(message));
   });
+
+  //envoie d'un abandon au serveur node, il est de type abandon et contient le nom d'utilisateur
+  document.getElementById("abandonner").addEventListener("click", function () {
+    message = {
+      type: "abandon",
+      username: username,
+    };
+    ws.send(JSON.stringify(message));
+  });
+
+  //bouton pour retourner au menu de stats et le mettre à jour
+  document.getElementById("toStats").addEventListener("click", function () {
+    divEndGame.style.display = "none";
+    updateStats();
+    divStats.style.display = "block";
+  });
+
+  //////////////////////////////////////////////////////////// Fonctions ////////////////////////////////////////////////////////////////////////
 
   // Fonction pour générer le plateau
   function generateBoard() {
@@ -439,7 +550,18 @@ function onDeviceReady() {
     ws.send(JSON.stringify(message));
   }
 
-  // Générer le plateau et les pions
+  // Fonction pour réinitialiser les variable de jeu
+  function resetGame() {
+    pieces.innerHTML = "";
+    selectedPiece = null;
+    highlightedCells = [];
+    myturn = null;
+    isjoueurWhite = null;
+    adversaire = null;
+  }
+
+  //////////////////////////////////////////////// Initialisation ////////////////////////////////////////////////////////////////////////
+
+  // Générer le plateau au lancement de l'application
   generateBoard();
-  generatePieces();
 }

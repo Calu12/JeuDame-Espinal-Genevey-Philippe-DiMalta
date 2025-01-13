@@ -17,211 +17,253 @@
  * under the License.
  */
 * {
-    -webkit-tap-highlight-color: rgba(0,0,0,0); /* make transparent link selection, adjust last value opacity 0 to 1.0 */
+  -webkit-tap-highlight-color: rgba(
+    0,
+    0,
+    0,
+    0
+  ); /* make transparent link selection, adjust last value opacity 0 to 1.0 */
 }
 
 body {
-    -webkit-touch-callout: none;                /* prevent callout to copy image, etc when tap to hold */
-    -webkit-text-size-adjust: none;             /* prevent webkit from resizing text to fit */
-    -webkit-user-select: none;                  /* prevent copy paste, to allow, change 'none' to 'text' */
-    background-color:#E4E4E4;
-    font-family: system-ui, -apple-system, -apple-system-font, 'Segoe UI', 'Roboto', sans-serif;
-    font-size:12px;
-    height:100vh;
-    margin:0px;
-    padding:0px;
-    /* Padding to avoid the "unsafe" areas behind notches in the screen */
-    padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px);
-    text-transform:uppercase;
-    width:100%;
+  -webkit-touch-callout: none; /* prevent callout to copy image, etc when tap to hold */
+  -webkit-text-size-adjust: none; /* prevent webkit from resizing text to fit */
+  -webkit-user-select: none; /* prevent copy paste, to allow, change 'none' to 'text' */
+  background-color: #e4e4e4;
+  font-family: system-ui, -apple-system, -apple-system-font, "Segoe UI",
+    "Roboto", sans-serif;
+  font-size: 12px;
+  height: 100vh;
+  margin: 0px;
+  padding: 0px;
+  /* Padding to avoid the "unsafe" areas behind notches in the screen */
+  padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px)
+    env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px);
+  text-transform: uppercase;
+  width: 100%;
 }
 
 /* Portrait layout (default) */
 .app {
-    position:absolute;             /* position in the center of the screen */
-    left:50%;
-    top:50%;
-    height:50px;                   /* text area height */
-    width:225px;                   /* text area width */
-    text-align:center;
-    padding:180px 0px 0px 0px;     /* image height is 200px (bottom 20px are overlapped with text) */
-    margin:-115px 0px 0px -112px;  /* offset vertical: half of image height and text area height */
-                                   /* offset horizontal: half of text area width */
+  position: absolute; /* position in the center of the screen */
+  left: 50%;
+  top: 50%;
+  height: 50px; /* text area height */
+  width: 225px; /* text area width */
+  text-align: center;
+  padding: 180px 0px 0px 0px; /* image height is 200px (bottom 20px are overlapped with text) */
+  margin: -115px 0px 0px -112px; /* offset vertical: half of image height and text area height */
+  /* offset horizontal: half of text area width */
 }
 
 /* Landscape layout (with min-width) */
-@media screen and (min-aspect-ratio: 1/1) and (min-width:400px) {
-    .app {
-        background-position:left center;
-        padding:75px 0px 75px 170px;  /* padding-top + padding-bottom + text area = image height */
-        margin:-90px 0px 0px -198px;  /* offset vertical: half of image height */
-                                      /* offset horizontal: half of image width and text area width */
-    }
+@media screen and (min-aspect-ratio: 1/1) and (min-width: 400px) {
+  .app {
+    background-position: left center;
+    padding: 75px 0px 75px 170px; /* padding-top + padding-bottom + text area = image height */
+    margin: -90px 0px 0px -198px; /* offset vertical: half of image height */
+    /* offset horizontal: half of image width and text area width */
+  }
 }
 
 @media screen and (min-width: 900px) {
-    .app {
-        width: 600px; 
-        height: auto;
-        margin: 0 auto; 
-        padding: 50px 0 50px 0;
-        position: relative; /* Ajustement pour ordinateur */
-        bottom: auto;
-        right: auto;
-        left : auto;
-        display: block;
-        background-position:left center;
-    }
-    body {
-        height: auto;
-        margin: 0 auto; 
-        padding: 0 0 0 0;
-        position: relative; /* Ajustement pour ordinateur */
-        bottom: auto;
-        right: auto;
-        left: auto;
-    }
-    #loginPage {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-    }
-}
-
-h1 {
-    font-size:24px;
-    font-weight:normal;
-    margin:0px;
-    overflow:visible;
-    padding:0px;
-    text-align:center;
-}
-
-.textJeu {
-    font-size: 24px;
-    font-weight: normal;
-    color: white; /* Assurez-vous que le texte est lisible sur un fond sombre */
-    margin: 5px 0; /* Réduisez l'espacement entre les éléments */
+  .app {
+    width: 600px;
+    height: auto;
+    margin: 0 auto;
+    padding: 50px 0 50px 0;
+    position: relative; /* Ajustement pour ordinateur */
+    bottom: auto;
+    right: auto;
+    left: auto;
+    display: block;
+    background-position: left center;
   }
-
-.event {
-    border-radius:4px;
-    color:#FFFFFF;
-    font-size:12px;
-    margin:0px 30px;
-    padding:2px 0px;
-}
-
-.event.listening {
-    background-color:#333333;
-    display:block;
-}
-
-.event.received {
-    background-color:#4B946A;
-    display:none;
-}
-
-#deviceready.ready .event.listening { display: none; }
-#deviceready.ready .event.received { display: block; }
-
-@keyframes fade {
-    from { opacity: 1.0; }
-    50% { opacity: 0.4; }
-    to { opacity: 1.0; }
-}
-
-.blink {
-    animation:fade 3000ms infinite;
-    -webkit-animation:fade 3000ms infinite;
-}
-
-
-@media screen and (prefers-color-scheme: dark) {
-    body {
-        background-image:linear-gradient(to bottom, #585858 0%, #1B1B1B 51%);
-    }
-}
-
-#logoutPage {
-    display: none;
-}
-
-#statsPage {
-    display: none;
-}
-
-#jeu {
-    display: none;
-}
-
-#toJeu {
-    padding: 10px; font-size: 20px; 
-    border-radius: 10px; 
-    background-color:#e00000;
-}
-
-#toJeu:hover {
-    background-color:#e0000090;
-}
-
-.form-group { 
-    display: flex; 
-    flex-direction: column; 
-    margin-bottom: 15px;
-    margin-top: 15px; 
-}
-
-#board-container {
-    display: flex;
-    flex-direction: column; /* Aligne les éléments verticalement */
+  body {
+    height: auto;
+    margin: 0 auto;
+    padding: 0 0 0 0;
+    position: relative; /* Ajustement pour ordinateur */
+    bottom: auto;
+    right: auto;
+    left: auto;
+  }
+  #loginPage {
+    display: block;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: #333333;
   }
+}
 
-  button:hover {
-    cursor: pointer;
+h1 {
+  font-size: 24px;
+  font-weight: normal;
+  margin: 0px;
+  overflow: visible;
+  padding: 0px;
+  text-align: center;
+}
+
+.textJeu {
+  font-size: 24px;
+  font-weight: normal;
+  color: white; /* Assurez-vous que le texte est lisible sur un fond sombre */
+  margin: 5px 0; /* Réduisez l'espacement entre les éléments */
+}
+
+.event {
+  border-radius: 4px;
+  color: #ffffff;
+  font-size: 12px;
+  margin: 0px 30px;
+  padding: 2px 0px;
+}
+
+.event.listening {
+  background-color: #333333;
+  display: block;
+}
+
+.event.received {
+  background-color: #4b946a;
+  display: none;
+}
+
+#deviceready.ready .event.listening {
+  display: none;
+}
+#deviceready.ready .event.received {
+  display: block;
+}
+
+@keyframes fade {
+  from {
+    opacity: 1;
   }
-
-  #loginDiv input {
-    border-radius: 10px;
-    padding: 10px;
+  50% {
+    opacity: 0.4;
   }
-
-  .auth-form-body {
-    border: 1px solid; /* Ajoute une bordure */ 
-    border-radius: 10px; /* Arrondit les coins */ 
-    padding: 20px; /* Ajoute du padding à l'intérieur de la bordure */ 
-    background-color: #333333; 
-    margin: 20px;
-
+  to {
+    opacity: 1;
   }
+}
 
-  #nameBlack {
-    color: black;
-  }
-  
-  .top-elements {
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Centrer horizontalement */
-    margin-bottom: 10px; /* Espacement entre le haut et le plateau */
-  }
+.blink {
+  animation: fade 3000ms infinite;
+  -webkit-animation: fade 3000ms infinite;
+}
 
-  .bottom-elements {
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Centrer horizontalement */
-    margin-top: 10px; /* Espacement entre le bas et le plateau */
+@media screen and (prefers-color-scheme: dark) {
+  body {
+    background-image: linear-gradient(to bottom, #585858 0%, #1b1b1b 51%);
   }
+}
 
-  .middle-elements {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+#logoutPage {
+  display: none;
+  width: 80%;
+}
 
-  
+#statsPage {
+  display: none;
+  width: 80%;
+}
+
+#jeu {
+  display: none;
+}
+
+#toJeu {
+  padding: 10px;
+  font-size: 20px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  background-color: green;
+}
+
+#toJeu:hover {
+  background-color: darkgreen;
+}
+
+.form-group {
+  display: block;
+
+  margin-bottom: 15px;
+  margin-top: 15px;
+}
+
+#board-container {
+  display: block;
+  /* Aligne les éléments verticalement */
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #333333;
+}
+
+button:hover {
+  cursor: pointer;
+}
+
+#loginDiv input {
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.auth-form-body {
+  border: 1px solid; /* Ajoute une bordure */
+  border-radius: 10px; /* Arrondit les coins */
+  padding: 20px; /* Ajoute du padding à l'intérieur de la bordure */
+  background-color: #333333;
+  margin: 20px;
+}
+
+#nameBlack {
+  color: black; /* Couleur de la lettre */
+  text-shadow: 0px 0px 3 white;
+}
+
+.top-elements {
+  display: block;
+
+  align-items: center; /* Centrer horizontalement */
+  margin-bottom: 10px; /* Espacement entre le haut et le plateau */
+}
+
+.bottom-elements {
+  display: block;
+
+  align-items: center; /* Centrer horizontalement */
+  margin-top: 10px; /* Espacement entre le bas et le plateau */
+}
+
+.middle-elements {
+  display: block;
+  justify-content: center;
+  align-items: center;
+}
+
+#endGamePage {
+  display: none;
+}
+
+.btnRouge {
+  padding: 10px;
+  margin: 10px;
+  background-color: #e00000;
+}
+
+table {
+  display: block;
+  margin: auto; /* Centre la table horizontalement */
+  border-collapse: collapse; /* Optionnel : rend les bordures plus propres */
+  width: 80%; /* Nécessaire pour margin:auto */
+  border: 1px solid black; /* Bordure pour voir la table */
+}
+th,
+td {
+  border: 1px solid black;
+  padding: 8px;
+  text-align: center;
+}
