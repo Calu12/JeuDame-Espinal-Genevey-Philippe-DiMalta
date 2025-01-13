@@ -228,6 +228,9 @@ function onDeviceReady() {
         td3.innerText = element.matchesPerdus;
         td4.innerText = element.matchesNuls;
         td5.innerText = element.matchesJoues;
+        if(element.username == username){
+          tr.style.fontweight = "bold";
+        }
         tr.appendChild(td1);
         tr.appendChild(td2);
         tr.appendChild(td3);
