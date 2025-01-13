@@ -33,7 +33,7 @@ function onDeviceReady() {
   const inputPassword = document.getElementById("password");
   const btnPlay = document.getElementById("toJeu");
   const divEndGame = document.getElementById("endGamePage");
-  const messageEndGame = document.getElementById("EndGameMessage");
+  const messageEndGame = document.getElementById("endGameMessage");
   const tableStats = document.getElementById("listeJoueurs");
   const ws = new WebSocket("ws://127.0.0.1:9898/"); //127.0.0.1:9898 pour browser et 10.0.0.2:9898 pour emulateur
 
