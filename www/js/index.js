@@ -76,6 +76,8 @@ function onDeviceReady() {
     //message de déconnection
     if (message.type == "logout" && message.success) {
       username = null;
+      btnPlay.disabled = false;
+      btnPlay.innerText = "Chercher une partie";
       divLogin.style.display = "flex";
       divStats.style.display = "none";
       divLogout.style.display = "none";
