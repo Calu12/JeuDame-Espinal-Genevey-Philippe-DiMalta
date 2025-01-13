@@ -179,7 +179,7 @@ function onDeviceReady() {
     if (message.type == "finMatch") {
       if (message.winner == username) {
         messageEndGame.innerText = "Félicitations, vous avez gagné !";
-      }else{
+      } else {
         messageEndGame.innerText = "Dommage, vous avez perdu...";
       }
       divJeu.style.display = "none";
@@ -189,16 +189,46 @@ function onDeviceReady() {
     }
 
     //message de mise a jour des stats
-    if (message.type == "stats" ) {
+    if (message.type == "stats") {
       tableStats.innerHTML = "";
-      message.stats.forEach((element) => {
+      const header = document.createElement("tr");
+      const th1 = document.createElement("th");
+      const th2 = document.createElement("th");
+      const th3 = document.createElement("th");
+      const th4 = document.createElement("th");
+      const th5 = document.createElement("th");
+      th1.innerText = "Joueur";
+      th2.innerText = "Victoires";
+      th3.innerText = "Défaites";
+      th4.innerText = "Match nuls";
+      th5.innerText = "Parties jouées";
+      header.appendChild(th1);
+      header.appendChild(th2);
+      header.appendChild(th3);
+      header.appendChild(th4);
+      header.appendChild(th5);
+      tableStats.appendChild(header);
+
+      // Tri des stats par ordre décroissant des victoires
+      const sortedStats = message.stats.sort((a, b) => b.matchesGagnes - a.matchesGagnes);
+
+      sortedStats.forEach((element) => {
         const tr = document.createElement("tr");
         const td1 = document.createElement("td");
         const td2 = document.createElement("td");
+        const td3 = document.createElement("td");
+        const td4 = document.createElement("td");
+        const td5 = document.createElement("td");
         td1.innerText = element.username;
-        td2.innerText = element.win;
+        td2.innerText = element.matchesGagnes;
+        td3.innerText = element.matchesPerdus;
+        td4.innerText = element.matchesNuls;
+        td5.innerText = element.matchesJoues;
         tr.appendChild(td1);
         tr.appendChild(td2);
+        tr.appendChild(td3);
+        tr.appendChild(td4);
+        tr.appendChild(td5);
         tableStats.appendChild(tr);
       });
     }
@@ -263,8 +293,7 @@ function onDeviceReady() {
     board.setAttribute("height", boardSize * cellSize + svgPadding);
     board.setAttribute(
       "viewBox",
-      `-20 -20 ${boardSize * cellSize + svgPadding} ${
-        boardSize * cellSize + svgPadding
+      `-20 -20 ${boardSize * cellSize + svgPadding} ${boardSize * cellSize + svgPadding
       }`
     );
 
@@ -439,7 +468,7 @@ function onDeviceReady() {
           if (
             intermediateCircle &&
             intermediateCircle.getAttribute("fill") !==
-              selectedPiece.getAttribute("fill") &&
+            selectedPiece.getAttribute("fill") &&
             isForward
           ) {
             const nextRow = targetRow + dr;
