@@ -159,11 +159,11 @@ h1 {
 #toJeu {
     padding: 10px; font-size: 20px; 
     border-radius: 10px; 
-    background-color:#e00000;
+    background-color:greenyellow;
 }
 
 #toJeu:hover {
-    background-color:#e0000090;
+    background-color:green;
 }
 
 .form-group { 
@@ -228,4 +228,10 @@ h1 {
     display: none;
   }
 
+  .btnRouge {
+    #toJeu {
+        padding: 10px;
+        background-color:#e00000;
+    }
+  }
   
