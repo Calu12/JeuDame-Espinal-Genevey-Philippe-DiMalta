@@ -239,7 +239,7 @@ h1 {
   table {
     margin: auto; /* Centre la table horizontalement */
     border-collapse: collapse; /* Optionnel : rend les bordures plus propres */
-    width: 50%; /* Nécessaire pour margin:auto */
+    width: 80%; /* Nécessaire pour margin:auto */
     border: 1px solid black; /* Bordure pour voir la table */
   }
   th, td {
