@@ -32,6 +32,8 @@ function onDeviceReady() {
   const inputUsername = document.getElementById("username");
   const inputPassword = document.getElementById("password");
   const btnPlay = document.getElementById("toJeu");
+  const divEndGame = document.getElementById("endGamePage");
+  const messageEndGame = document.getElementById("EndGameMessage");
   const ws = new WebSocket("ws://127.0.0.1:9898/"); //127.0.0.1:9898 pour browser et 10.0.0.2:9898 pour emulateur
 
   //déclaration des variables pour une partie
@@ -57,6 +59,7 @@ function onDeviceReady() {
     message = JSON.parse(e.data);
     console.log("Message:", e.data);
 
+    //message de connection
     if (message.type == "login" && message.success) {
       username = message.joueur.username;
       divLogin.style.display = "none";
@@ -65,7 +68,9 @@ function onDeviceReady() {
       updateStats();
     }
 
+    //message de debut de partie
     if (message.type == "debutMatch") {
+      generatePieces();
       divStats.style.display = "none";
       divJeu.style.display = "block";
       btnPlay.disabled = false;
@@ -90,6 +95,7 @@ function onDeviceReady() {
         : "À l'adversaire de jouer";
     }
 
+    //message de validation d'un mouvement
     if (message.type == "moveReturn") {
       console.log("Déplacement reçu :", message);
       // Déterminer les coordonnées intermédiaires (pour un saut)
@@ -155,6 +161,19 @@ function onDeviceReady() {
         ? "À vous de jouer"
         : "À l'adversaire de jouer";
     }
+
+    //message de fin de partie
+    if (message.type == "finMatch") {
+      if (message.winner == username) {
+        messageEndGame.innerText = "Félicitations, vous avez gagné !";
+      }else{
+        messageEndGame.innerText = "Dommage, vous avez perdu...";
+      }
+      divJeu.style.display = "none";
+      divEndGame.style.display = "block";
+      pieces.innerHTML = "";
+
+    }
   };
   ws.onclose = function () {
     console.log("Fermé");
@@ -190,6 +209,22 @@ function onDeviceReady() {
       username: username,
     };
     ws.send(JSON.stringify(message));
+  });
+
+  //envoie d'un abandon au serveur node, il est de type abandon et contient le nom d'utilisateur
+  document.getElementById("abandonner").addEventListener("click", function () {
+    message = {
+      type: "abandon",
+      username: username,
+    };
+    ws.send(JSON.stringify(message));
+  });
+
+  //bouton pour retourner au menu de stats et le mettre à jour
+  document.getElementById("toStats").addEventListener("click", function () {
+    divEndGame.style.display = "none";
+    updateStats();
+    divStats.style.display = "block";
   });
 
   // Fonction pour générer le plateau
@@ -444,5 +479,4 @@ function onDeviceReady() {
 
   // Générer le plateau et les pions
   generateBoard();
-  generatePieces();
 }

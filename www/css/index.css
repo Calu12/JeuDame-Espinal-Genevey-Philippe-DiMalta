@@ -224,4 +224,8 @@ h1 {
     align-items: center;
   }
 
+  #endGamePage {
+    display: none;
+  }
+
   
