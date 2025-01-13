@@ -158,6 +158,7 @@ h1 {
 
 #toJeu {
     padding: 10px; font-size: 20px; 
+    margin-bottom: 10px;
     border-radius: 10px; 
     background-color:green;
 }
@@ -203,6 +204,7 @@ h1 {
   #nameBlack {
     color: black; /* Couleur de la lettre */
     text-shadow: -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white;
+    font-size: 2rem;
   }
   
   .top-elements {
