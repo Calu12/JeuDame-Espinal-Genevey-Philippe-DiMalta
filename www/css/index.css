@@ -230,7 +230,8 @@ h1 {
   }
 
   .btnRouge {
-        padding: 20px;
+        padding: 10px;
+        margin: 10px;
         background-color:#e00000;
   }
 
