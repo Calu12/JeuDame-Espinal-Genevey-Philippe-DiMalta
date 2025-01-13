@@ -203,8 +203,7 @@ h1 {
 
   #nameBlack {
     color: black; /* Couleur de la lettre */
-    text-shadow: -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white;
-    font-size: 2rem;
+    text-shadow: 0px 0px 1 white, 0px 0px 1 white, 0px 0px 1 white, 0px 0px 1 white;
   }
   
   .top-elements {
