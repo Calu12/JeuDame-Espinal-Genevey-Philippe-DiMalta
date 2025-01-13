@@ -34,6 +34,7 @@ function onDeviceReady() {
   const btnPlay = document.getElementById("toJeu");
   const divEndGame = document.getElementById("endGamePage");
   const messageEndGame = document.getElementById("EndGameMessage");
+  const tableStats = document.getElementById("listeJoueurs");
   const ws = new WebSocket("ws://127.0.0.1:9898/"); //127.0.0.1:9898 pour browser et 10.0.0.2:9898 pour emulateur
 
   //déclaration des variables pour une partie
@@ -173,6 +174,21 @@ function onDeviceReady() {
       divEndGame.style.display = "block";
       resetGame();      
     }
+
+    //message de mise a jour des stats
+    if (message.type == "stats" ) {
+      tableStats.innerHTML = "";
+      message.stats.forEach((element) => {
+        const tr = document.createElement("tr");
+        const td1 = document.createElement("td");
+        const td2 = document.createElement("td");
+        td1.innerText = element.username;
+        td2.innerText = element.win;
+        tr.appendChild(td1);
+        tr.appendChild(td2);
+        tableStats.appendChild(tr);
+      });
+    }
   };
   ws.onclose = function () {
     console.log("Fermé");
@@ -199,7 +215,7 @@ function onDeviceReady() {
       ws.send(JSON.stringify(message));
     });
 
-  //envoie un message de demande demande de partie au serveur node, il est de type demande et contient le nom d'utilisateur
+  //envoie un message de demande de partie au serveur node, il est de type demande et contient le nom d'utilisateur
   btnPlay.addEventListener("click", function () {
     btnPlay.disabled = true;
     btnPlay.innerText = "En attente d'un adversaire...";
