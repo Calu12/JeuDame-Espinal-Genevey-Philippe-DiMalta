@@ -151,6 +151,9 @@ function onDeviceReady() {
         });
 
       myturn = !myturn;
+      document.getElementById("nameTurn").innerText = myturn
+        ? "À vous de jouer"
+        : "À l'adversaire de jouer";
     }
   };
   ws.onclose = function () {
