@@ -73,6 +73,7 @@ function onDeviceReady() {
     if (message.type == "debutMatch") {
       generatePieces();
       divStats.style.display = "none";
+      divLogout.style.display = "none";
       divJeu.style.display = "block";
       btnPlay.disabled = false;
       btnPlay.innerText = "Chercher une partie";
@@ -172,7 +173,8 @@ function onDeviceReady() {
       }
       divJeu.style.display = "none";
       divEndGame.style.display = "block";
-      resetGame();      
+      resetGame();
+      divLogout.style.display = "block";
     }
 
     //message de mise a jour des stats
