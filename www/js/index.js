@@ -24,6 +24,8 @@ document.addEventListener("deviceready", onDeviceReady, false);
 function onDeviceReady() {
   // Cordova is now initialized. Have fun!
 
+//////////////////////////////////////////////////////////// Définition des variables ////////////////////////////////////////////////////////////////////////
+
   //déclaration des variables
   const divLogin = document.getElementById("loginPage");
   const divJeu = document.getElementById("jeu");
@@ -50,6 +52,8 @@ function onDeviceReady() {
   const board = document.getElementById("board");
   const pieces = document.getElementById("pieces");
   let selectedPiece = null; // Variable pour stocker le pion sélectionné
+
+//////////////////////////////////////////////////////////// WebSocket ////////////////////////////////////////////////////////////////////////
 
   ws.onopen = function () {
     console.log("Connecté");
@@ -237,6 +241,10 @@ function onDeviceReady() {
     console.log("Fermé");
   };
 
+
+//////////////////////////////////////////////////////////// Buttons Events ////////////////////////////////////////////////////////////////////////
+
+
   //envoie un message de connection au serveur node, il est de type login et contient le nom d'utilisateur et le motde passe
   document.getElementById("loginButton").addEventListener("click", function () {
     message = {
@@ -269,6 +277,9 @@ function onDeviceReady() {
     ws.send(JSON.stringify(message));
   });
 
+
+
+  
   //envoie d'un abandon au serveur node, il est de type abandon et contient le nom d'utilisateur
   document.getElementById("abandonner").addEventListener("click", function () {
     message = {
@@ -278,12 +289,21 @@ function onDeviceReady() {
     ws.send(JSON.stringify(message));
   });
 
+
+
+
   //bouton pour retourner au menu de stats et le mettre à jour
   document.getElementById("toStats").addEventListener("click", function () {
     divEndGame.style.display = "none";
     updateStats();
     divStats.style.display = "block";
   });
+
+
+
+//////////////////////////////////////////////////////////// Fonctions ////////////////////////////////////////////////////////////////////////
+
+
 
   // Fonction pour générer le plateau
   function generateBoard() {
@@ -352,6 +372,8 @@ function onDeviceReady() {
     }
   }
 
+
+
   // Fonction pour générer les pions
   function generatePieces() {
     for (let row = 0; row < boardSize; row++) {
@@ -368,6 +390,8 @@ function onDeviceReady() {
       }
     }
   }
+
+
 
   // Fonction pour créer un pion
   function createPiece(row, col, color) {
@@ -390,6 +414,8 @@ function onDeviceReady() {
 
     pieces.appendChild(piece);
   }
+
+
 
   // Fonction appelée lorsqu'un pion est cliqué
   function onPieceClick(e, piece) {
@@ -497,6 +523,8 @@ function onDeviceReady() {
     }
   }
 
+
+
   // Fonction appelée lorsqu'une case est cliquée
   function onCellClick(e, row, col) {
     if (myturn && selectedPiece) {
@@ -526,6 +554,8 @@ function onDeviceReady() {
     }
   }
 
+
+
   function updateStats() {
     message = {
       type: "demandeStats",
@@ -533,6 +563,8 @@ function onDeviceReady() {
     };
     ws.send(JSON.stringify(message));
   }
+
+
 
   // Fonction pour réinitialiser les variable de jeu
   function resetGame() {
@@ -543,6 +575,9 @@ function onDeviceReady() {
     isjoueurWhite = null;
     adversaire = null;
   }
+
+
+  //////////////////////////////////////////////// Initialisation ////////////////////////////////////////////////////////////////////////
 
   // Générer le plateau au lancement de l'application
   generateBoard();
