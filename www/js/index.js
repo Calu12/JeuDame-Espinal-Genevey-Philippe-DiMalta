@@ -229,7 +229,11 @@ function onDeviceReady() {
         td4.innerText = element.matchesNuls;
         td5.innerText = element.matchesJoues;
         if(element.username == username){
-          tr.style.fontweight = "bold";
+          td1.style.fontweight = "bold";
+          td2.style.fontweight = "bold";
+          td3.style.fontweight = "bold";
+          td4.style.fontweight = "bold";
+          td5.style.fontweight = "bold";
         }
         tr.appendChild(td1);
         tr.appendChild(td2);
