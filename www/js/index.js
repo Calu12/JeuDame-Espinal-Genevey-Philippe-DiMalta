@@ -69,6 +69,17 @@ function onDeviceReady() {
       updateStats();
     }
 
+    //message de déconnection
+    if (message.type == "logout" && message.success) {
+      username = null;
+      divLogin.style.display = "block";
+      divStats.style.display = "none";
+      divLogout.style.display = "none";
+      divJeu.style.display = "none";
+      divEndGame.style.display = "none";
+      tableStats.innerHTML = "";
+    }
+
     //message de debut de partie
     if (message.type == "debutMatch") {
       generatePieces();
