@@ -150,6 +150,7 @@ h1 {
 
 #statsPage {
     display: none;
+    width: 80%;
 }
 
 #jeu {
@@ -237,6 +238,7 @@ h1 {
   }
 
   table {
+    display: flex;
     margin: auto; /* Centre la table horizontalement */
     border-collapse: collapse; /* Optionnel : rend les bordures plus propres */
     width: 80%; /* Nécessaire pour margin:auto */

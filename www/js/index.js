@@ -68,15 +68,15 @@ function onDeviceReady() {
     if (message.type == "login" && message.success) {
       username = message.joueur.username;
       divLogin.style.display = "none";
-      divStats.style.display = "block";
-      divLogout.style.display = "block";
+      divStats.style.display = "flex";
+      divLogout.style.display = "flex";
       updateStats();
     }
 
     //message de déconnection
     if (message.type == "logout" && message.success) {
       username = null;
-      divLogin.style.display = "block";
+      divLogin.style.display = "flex";
       divStats.style.display = "none";
       divLogout.style.display = "none";
       divJeu.style.display = "none";
@@ -89,7 +89,7 @@ function onDeviceReady() {
       generatePieces();
       divStats.style.display = "none";
       divLogout.style.display = "none";
-      divJeu.style.display = "block";
+      divJeu.style.display = "flex";
       btnPlay.disabled = false;
       btnPlay.innerText = "Chercher une partie";
       if (message.joueur1 == username) {
@@ -187,9 +187,9 @@ function onDeviceReady() {
         messageEndGame.innerText = "Dommage, vous avez perdu...";
       }
       divJeu.style.display = "none";
-      divEndGame.style.display = "block";
+      divEndGame.style.display = "flex";
       resetGame();
-      divLogout.style.display = "block";
+      divLogout.style.display = "flex";
     }
 
     //message de mise a jour des stats
@@ -303,7 +303,7 @@ function onDeviceReady() {
   document.getElementById("toStats").addEventListener("click", function () {
     divEndGame.style.display = "none";
     updateStats();
-    divStats.style.display = "block";
+    divStats.style.display = "flex";
   });
 
 
