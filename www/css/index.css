@@ -69,7 +69,7 @@ body {
         bottom: auto;
         right: auto;
         left : auto;
-        display: block;
+        display: flex;
         background-position:left center;
     }
     body {
@@ -115,7 +115,7 @@ h1 {
 
 .event.listening {
     background-color:#333333;
-    display:block;
+    display:flex;
 }
 
 .event.received {
@@ -124,7 +124,7 @@ h1 {
 }
 
 #deviceready.ready .event.listening { display: none; }
-#deviceready.ready .event.received { display: block; }
+#deviceready.ready .event.received { display: flex; }
 
 @keyframes fade {
     from { opacity: 1.0; }
