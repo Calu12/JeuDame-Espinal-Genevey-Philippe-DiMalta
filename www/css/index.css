@@ -201,7 +201,8 @@ h1 {
   }
 
   #nameBlack {
-    color: black;
+    color: black; /* Couleur de la lettre */
+    text-shadow: -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white;
   }
   
   .top-elements {
@@ -229,9 +230,19 @@ h1 {
   }
 
   .btnRouge {
-    #toJeu {
         padding: 20px;
         background-color:#e00000;
-    }
+  }
+
+  table {
+    margin: auto; /* Centre la table horizontalement */
+    border-collapse: collapse; /* Optionnel : rend les bordures plus propres */
+    width: 50%; /* Nécessaire pour margin:auto */
+    border: 1px solid black; /* Bordure pour voir la table */
+  }
+  th, td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: center;
   }
   
