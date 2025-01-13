@@ -43,7 +43,7 @@ function onDeviceReady() {
   let highlightedCells = [];
   let myturn = false;
 
-  // Dimensions du plateau
+  // Dimensions et variables du plateau
   const boardSize = 8; // 8x8 cases
   const cellSize = 50; // Chaque case est de 50x50 pixels
   const board = document.getElementById("board");
@@ -171,8 +171,7 @@ function onDeviceReady() {
       }
       divJeu.style.display = "none";
       divEndGame.style.display = "block";
-      pieces.innerHTML = "";
-
+      resetGame();      
     }
   };
   ws.onclose = function () {
@@ -477,6 +476,16 @@ function onDeviceReady() {
     ws.send(JSON.stringify(message));
   }
 
-  // Générer le plateau et les pions
+  // Fonction pour réinitialiser les variable de jeu
+  function resetGame() {
+    pieces.innerHTML = "";
+    selectedPiece = null;
+    highlightedCells = [];
+    myturn = null;
+    isjoueurWhite = null;
+    adversaire = null;
+  }
+
+  // Générer le plateau au lancement de l'application
   generateBoard();
 }
