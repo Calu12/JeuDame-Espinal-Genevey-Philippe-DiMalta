@@ -450,7 +450,7 @@ function onDeviceReady() {
         const isWhite = selectedPiece.getAttribute("fill") === "#ffffff"; // Blanc
         const isForward = (isWhite && dr === -1) || (!isWhite && dr === 1); // Avant
         if (cell && !circleInCell && isForward) {
-          cell.setAttribute("fill", "rgba(0, 255, 0, 0.5)");
+          cell.setAttribute("fill", "rgb(0, 255, 0)");
           highlightedCells.push(cell);
         }
 
