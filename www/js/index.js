@@ -463,7 +463,7 @@ function onDeviceReady() {
             parseInt(circle.getAttribute("data-row")) === targetRow &&
             parseInt(circle.getAttribute("data-col")) === targetCol
         );
-        if (cell && !circleInCell) {
+        if (cell && !circleInCell && (joueurWhite && dr === -1) || (!joueurWhite && dr === 1)) {
           cell.setAttribute("fill", "rgba(0, 255, 0, 0.5)");
           highlightedCells.push(cell);
         }
