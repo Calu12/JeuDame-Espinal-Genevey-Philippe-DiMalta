@@ -444,10 +444,15 @@ function onDeviceReady() {
             parseInt(circle.getAttribute("data-row")) === targetRow &&
             parseInt(circle.getAttribute("data-col")) === targetCol
         );
-        if (cell && !circleInCell && (joueurWhite && dr === -1) || (!joueurWhite && dr === 1)) {
+
+        // Déplacements d'un pion simple en avant 
+        const isForward = (isWhite && dr === -1) || (!isWhite && dr === 1); // Avant
+        if (cell && !circleInCell && isForward) {
           cell.setAttribute("fill", "rgba(0, 255, 0, 0.5)");
           highlightedCells.push(cell);
         }
+
+        // Capture d'un pion simple
         if (cell && circleInCell) {
           // Trouver le cercle dans la case intermédiaire
           const intermediateCircle = Array.from(
@@ -459,14 +464,13 @@ function onDeviceReady() {
           );
 
           const isWhite = selectedPiece.getAttribute("fill") === "#ffffff"; // Blanc
-          const isForward = (isWhite && dr === -1) || (!isWhite && dr === 1); // Avant
+          
 
           // Vérifier que la couleur du cercle est opposée
           if (
             intermediateCircle &&
             intermediateCircle.getAttribute("fill") !==
-              selectedPiece.getAttribute("fill") &&
-            isForward
+              selectedPiece.getAttribute("fill") 
           ) {
             const nextRow = targetRow + dr;
             const nextCol = targetCol + dc;
