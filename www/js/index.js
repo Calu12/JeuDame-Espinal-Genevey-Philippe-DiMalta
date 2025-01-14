@@ -446,6 +446,8 @@ function onDeviceReady() {
         );
 
         // Déplacements d'un pion simple en avant 
+
+        const isWhite = selectedPiece.getAttribute("fill") === "#ffffff"; // Blanc
         const isForward = (isWhite && dr === -1) || (!isWhite && dr === 1); // Avant
         if (cell && !circleInCell && isForward) {
           cell.setAttribute("fill", "rgba(0, 255, 0, 0.5)");
@@ -462,10 +464,7 @@ function onDeviceReady() {
               parseInt(circle.getAttribute("data-row")) === targetRow &&
               parseInt(circle.getAttribute("data-col")) === targetCol
           );
-
-          const isWhite = selectedPiece.getAttribute("fill") === "#ffffff"; // Blanc
           
-
           // Vérifier que la couleur du cercle est opposée
           if (
             intermediateCircle &&
