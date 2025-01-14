@@ -18,7 +18,19 @@ function onDeviceReady() {
   const divEndGame = document.getElementById("endGamePage");
   const messageEndGame = document.getElementById("endGameMessage");
   const tableStats = document.getElementById("listeJoueurs");
-  const ws = new WebSocket("ws://127.0.0.1:9898/"); //127.0.0.1:9898 pour browser et 10.0.0.2:9898 pour emulateur
+
+  //verifier si c'est android ou windows
+  let ws;
+
+  if (window.cordova) {
+    // Cordova environment (Android or Emulator)
+    const isEmulator = /10\.0\.2\.2/.test(window.location.href); // Check if running on an Android emulator
+    const ip = isEmulator ? "10.0.2.2" : "10.5.0.2"; // Use 10.0.2.2 for emulator or <your-PC-IP> for physical device
+    ws = new WebSocket(`ws://${ip}:9898/`);
+  } else {
+    // Browser environment
+    ws = new WebSocket("ws://127.0.0.1:9898/");
+  }
 
   //déclaration des variables pour une partie
   let username = null;
@@ -445,7 +457,7 @@ function onDeviceReady() {
             parseInt(circle.getAttribute("data-col")) === targetCol
         );
 
-        // Déplacements d'un pion simple en avant 
+        // Déplacements d'un pion simple en avant
 
         const isWhite = selectedPiece.getAttribute("fill") === "#ffffff"; // Blanc
         const isForward = (isWhite && dr === -1) || (!isWhite && dr === 1); // Avant
@@ -464,12 +476,12 @@ function onDeviceReady() {
               parseInt(circle.getAttribute("data-row")) === targetRow &&
               parseInt(circle.getAttribute("data-col")) === targetCol
           );
-          
+
           // Vérifier que la couleur du cercle est opposée
           if (
             intermediateCircle &&
             intermediateCircle.getAttribute("fill") !==
-              selectedPiece.getAttribute("fill") 
+              selectedPiece.getAttribute("fill")
           ) {
             const nextRow = targetRow + dr;
             const nextCol = targetCol + dc;
